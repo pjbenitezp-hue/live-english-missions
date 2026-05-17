@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Live English Missions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #1E3A6E;
+            --primary-light: #2D5AA0;
+            --accent: #FF6B35;
+            --accent-warm: #FFB800;
+            --success: #00C896;
+            --bg: #F5F7FF;
+            --card: #FFFFFF;
+            --text: #1A2744;
+            --text-muted: #6B7A99;
+            --border: #E8ECF4;
+            --nav-height: 72px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #D8E0EF;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app { width: 100%; max-width: 430px; min-height: 100vh; background: var(--bg); position: relative; box-shadow: 0 0 60px rgba(0,0,0,0.2); }
+        .screen { display: none; flex-direction: column; height: 100vh; overflow: hidden; }
+        .screen.active { display: flex; }
+        .screen-content { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; -webkit-overflow-scrolling: touch; padding-bottom: calc(var(--nav-height) + 24px); }
+
+        /* ── BOTTOM NAV ── */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 430px; height: var(--nav-height);
+            background: var(--card); border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-around;
+            z-index: 100; box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 3px;
+            cursor: pointer; padding: 8px 10px; border-radius: 12px;
+            transition: all .2s; border: none; background: none; color: var(--text-muted); flex: 1;
+        }
+        .nav-item.active { color: var(--accent); background: rgba(255,107,53,.08); }
+        .nav-icon { font-size: 22px; }
+        .nav-label { font-size: 10px; font-weight: 600; }
+
+        /* ── HOME ── */
+        .home-header {
+            background: linear-gradient(135deg, #0F1B2D 0%, #1E3A6E 60%, #2D5AA0 100%);
+            padding: 52px 20px 28px; color: white;
+        }
+        .home-header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
+        .app-logo-title { font-size: 20px; font-weight: 900; letter-spacing: -.5px; line-height: 1.15; }
+        .app-logo-title span { color: var(--accent); }
+        .app-logo-sub { font-size: 11px; opacity: .6; margin-top: 3px; font-weight: 500; }
+        .user-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),#FF9A6C); display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid rgba(255,255,255,.25); cursor: pointer; flex-shrink: 0; }
+        .stats-row { display: flex; gap: 10px; }
+        .stat-card { flex: 1; background: rgba(255,255,255,.1); border-radius: 14px; padding: 12px 8px; text-align: center; border: 1px solid rgba(255,255,255,.12); }
+        .stat-value { font-size: 20px; font-weight: 800; display: block; }
+        .stat-label { font-size: 10px; opacity: .7; font-weight: 500; margin-top: 2px; display: block; }
+        .streak-value { color: var(--accent-warm); }
+
+        .home-body { padding: 18px 16px; display: flex; flex-direction: column; gap: 14px; }
+        .section-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        .level-card { background: var(--card); border-radius: 16px; padding: 16px; box-shadow: 0 2px 14px rgba(0,0,0,.06); }
+        .level-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .level-badge { display: flex; align-items: center; gap: 10px; }
+        .level-icon { width: 38px; height: 38px; background: linear-gradient(135deg,var(--accent-warm),#FF9500); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .level-info h3 { font-size: 14px; font-weight: 700; color: var(--text); }
+        .level-info p { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .confidence-pct { font-size: 22px; font-weight: 900; color: var(--success); }
+        .progress-bar { height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg,var(--success),#00E5AE); transition: width .6s ease; }
+        .progress-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+        .progress-labels span { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+
+        .mission-card {
+            background: linear-gradient(135deg,#FF6B35 0%,#FF8C42 100%);
+            border-radius: 20px; padding: 20px; color: white;
+            position: relative; overflow: hidden; cursor: pointer;
+            box-shadow: 0 8px 28px rgba(255,107,53,.4);
+        }
+        .mission-card::before { content:''; position:absolute; top:-30px; right:-30px; width:130px; height:130px; background:rgba(255,255,255,.08); border-radius:50%; }
+        .mission-card::after  { content:''; position:absolute; bottom:-20px; right:20px; width:80px; height:80px; background:rgba(255,255,255,.06); border-radius:50%; }
+        .mission-tag { display:inline-block; background:rgba(255,255,255,.2); border-radius:6px; padding:3px 10px; font-size:10px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; margin-bottom:10px; }
+        .mission-card h2 { font-size:20px; font-weight:800; margin-bottom:6px; position:relative; z-index:1; }
+        .mission-card p  { font-size:13px; opacity:.85; margin-bottom:14px; line-height:1.45; position:relative; z-index:1; }
+        .mission-meta { display:flex; gap:14px; margin-bottom:16px; position:relative; z-index:1; }
+        .mission-meta-item { display:flex; align-items:center; gap:4px; font-size:12px; opacity:.9; font-weight:500; }
+        .btn-mission { background:white; color:var(--accent); border:none; border-radius:12px; padding:13px 20px; font-size:14px; font-weight:700; cursor:pointer; width:100%; position:relative; z-index:1; transition:transform .15s; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-mission:active { transform:scale(.97); }
+
+        /* Complete badge on home */
+        .mission-card.completed-card { background: linear-gradient(135deg,#00A878 0%,#00C896 100%); box-shadow:0 8px 28px rgba(0,200,150,.35); }
+        .mission-card.completed-card .btn-mission { color: var(--success); }
+
+        .quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .quick-card { background:var(--card); border-radius:16px; padding:16px; cursor:pointer; box-shadow:0 2px 10px rgba(0,0,0,.05); transition:transform .15s; border:1px solid var(--border); }
+        .quick-card:active { transform:scale(.96); }
+        .quick-icon { font-size:28px; margin-bottom:8px; display:block; }
+        .quick-card h4 { font-size:13px; font-weight:700; color:var(--text); margin-bottom:2px; }
+        .quick-card p { font-size:11px; color:var(--text-muted); }
+
+        /* ── MAP ── */
+        .map-header { background: linear-gradient(135deg,#0F1B2D 0%,#1E3A6E 60%,#2D5AA0 100%); padding:52px 20px 24px; color:white; }
+        .map-header h1 { font-size:22px; font-weight:900; margin-bottom:4px; }
+        .map-header p { font-size:13px; opacity:.7; }
+        .season-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.12); border-radius:20px; padding:5px 14px; font-size:12px; font-weight:600; margin-bottom:10px; border:1px solid rgba(255,255,255,.18); }
+        .map-body { padding:24px 16px; }
+        .episode-path { display:flex; flex-direction:column; }
+        .episode-row { display:flex; align-items:stretch; }
+        .episode-left { display:flex; flex-direction:column; align-items:center; width:48px; flex-shrink:0; }
+        .episode-dot { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; z-index:1; }
+        .episode-dot.completed { background:linear-gradient(135deg,var(--success),#00E5AE); box-shadow:0 4px 12px rgba(0,200,150,.4); }
+        .episode-dot.available { background:linear-gradient(135deg,var(--accent),#FF9A4A); box-shadow:0 4px 16px rgba(255,107,53,.5); animation:pulse 2s infinite; }
+        .episode-dot.locked { background:#E2E8F4; color:var(--text-muted); font-size:16px; }
+        @keyframes pulse { 0%,100%{box-shadow:0 4px 16px rgba(255,107,53,.5)} 50%{box-shadow:0 4px 28px rgba(255,107,53,.8)} }
+        .episode-line { width:2px; flex:1; min-height:20px; background:var(--border); margin:2px 0; }
+        .episode-line.done { background:var(--success); }
+        .episode-info { flex:1; padding:12px 14px; background:var(--card); border-radius:14px; margin:4px 0 4px 14px; border:1.5px solid var(--border); cursor:pointer; transition:all .2s; }
+        .episode-row.available .episode-info { border-color:var(--accent); box-shadow:0 4px 16px rgba(255,107,53,.15); }
+        .episode-row.completed .episode-info { border-color:rgba(0,200,150,.3); background:#F8FFFD; }
+        .episode-row.locked .episode-info { opacity:.45; cursor:default; }
+        .ep-day { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--text-muted); margin-bottom:2px; }
+        .ep-day.available { color:var(--accent); }
+        .ep-day.completed { color:var(--success); }
+        .ep-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:2px; }
+        .ep-skill { font-size:11px; color:var(--text-muted); }
+
+        /* ── MISSION ── */
+        .mission-header { background:linear-gradient(135deg,#0F1B2D 0%,#1E3A6E 60%,#2D5AA0 100%); padding:52px 20px 22px; color:white; }
+        .mission-header-top { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+        .back-btn { width:36px; height:36px; background:rgba(255,255,255,.12); border:none; border-radius:10px; color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .mission-header h2 { font-size:17px; font-weight:800; }
+        .mission-header p { font-size:11px; opacity:.7; }
+        .mission-progress-dots { display:flex; gap:4px; margin-top:4px; }
+        .pdot { flex:1; height:4px; background:rgba(255,255,255,.2); border-radius:100px; transition:background .3s; }
+        .pdot.done { background:white; }
+        .pdot.current { background:var(--accent-warm); }
+        .mission-body { padding:18px 16px; display:flex; flex-direction:column; gap:14px; }
+        .scene-card { border-radius:16px; padding:16px; color:white; display:flex; align-items:center; gap:14px; }
+        .scene-emoji { font-size:42px; }
+        .scene-info h3 { font-size:15px; font-weight:700; margin-bottom:4px; }
+        .scene-info p { font-size:12px; opacity:.8; line-height:1.4; }
+        .dialogue-card { background:var(--card); border-radius:16px; padding:16px; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+        .dialogue-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+        .char-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#667EEA,#764BA2); display:flex; align-items:center; justify-content:center; font-size:22px; }
+        .char-info h4 { font-size:14px; font-weight:700; color:var(--text); }
+        .char-info p { font-size:11px; color:var(--text-muted); }
+        .dialogue-bubble { background:#F0F4FF; border-radius:12px; padding:12px; border-left:3px solid var(--primary-light); }
+        .d-en { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; }
+        .d-es { font-size:12px; color:var(--text-muted); }
+        .phrases-section h3 { font-size:13px; font-weight:700; color:var(--text); margin-bottom:10px; }
+        .phrase-card { background:var(--card); border-radius:14px; padding:14px; margin-bottom:8px; border:2px solid var(--border); cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:space-between; gap:12px; box-shadow:0 1px 6px rgba(0,0,0,.04); }
+        .phrase-card.active { border-color:var(--accent); background:#FFF8F5; }
+        .phrase-card.done { border-color:var(--success); background:#F0FDF9; }
+        .phrase-en { font-size:14px; font-weight:600; color:var(--text); }
+        .phrase-es { font-size:12px; color:var(--text-muted); margin-top:2px; }
+        .phrase-btn { width:36px; height:36px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; transition:all .2s; }
+        .phrase-card.active .phrase-btn { background:var(--accent); }
+        .phrase-card.done .phrase-btn { background:var(--success); }
+        .action-buttons { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+        .action-btn { border:none; border-radius:14px; padding:14px 8px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:6px; font-size:11px; font-weight:600; transition:all .15s; }
+        .action-btn:active { transform:scale(.94); }
+        .action-btn .aicon { font-size:24px; }
+        .btn-listen { background:#EEF2FF; color:#4C63D2; }
+        .btn-repeat { background:#FFF0EB; color:var(--accent); }
+        .btn-simulate { background:linear-gradient(135deg,var(--accent),#FF9A4A); color:white; }
+        .tutor-feedback { background:linear-gradient(135deg,#F0F4FF,#EEF2FF); border-radius:16px; padding:14px; border:1px solid #D5DCFF; display:flex; gap:10px; align-items:flex-start; }
+        .lia-mini { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#667EEA,#764BA2); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+        .tutor-feedback h4 { font-size:12px; font-weight:700; color:var(--primary); margin-bottom:3px; }
+        .tutor-feedback p { font-size:12px; color:var(--text-muted); line-height:1.45; }
+        .btn-complete { background:linear-gradient(135deg,var(--success),#00E5AE); color:white; border:none; border-radius:14px; padding:16px; font-size:15px; font-weight:700; cursor:pointer; width:100%; transition:all .2s; box-shadow:0 4px 18px rgba(0,200,150,.35); display:flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-complete:active { transform:scale(.97); }
+        .already-done-banner { background:linear-gradient(135deg,#F0FDF9,#E8FAF3); border:1.5px solid rgba(0,200,150,.4); border-radius:14px; padding:14px; text-align:center; }
+        .already-done-banner p { font-size:13px; color:var(--success); font-weight:600; }
+
+        /* ── TUTOR ── */
+        .tutor-header { background:linear-gradient(135deg,#667EEA 0%,#764BA2 100%); padding:52px 20px 30px; color:white; text-align:center; }
+        .lia-avatar { width:84px; height:84px; border-radius:50%; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:42px; margin:0 auto 12px; border:3px solid rgba(255,255,255,.25); }
+        .tutor-header h1 { font-size:22px; font-weight:800; margin-bottom:4px; }
+        .tutor-header p { font-size:13px; opacity:.75; }
+        .tutor-body { padding:18px 16px; display:flex; flex-direction:column; gap:14px; }
+        .lia-message { background:linear-gradient(135deg,#F5F0FF,#EEF2FF); border-radius:16px; padding:18px 16px 16px; border:1px solid #D5DCFF; position:relative; }
+        .lia-message::before { content:'\201C'; position:absolute; top:-6px; left:14px; font-size:44px; color:#667EEA; font-family:Georgia,serif; line-height:1; }
+        .lia-message p { font-size:14px; color:var(--text); line-height:1.6; padding-top:8px; }
+        .analysis-card { background:var(--card); border-radius:16px; padding:16px; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+        .analysis-card h3 { font-size:14px; font-weight:700; color:var(--text); margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+        .error-item { border-radius:10px; padding:10px 12px; margin-bottom:6px; }
+        .error-wrong { background:#FFF5F5; border:1px solid #FFCCCC; }
+        .error-correct { background:#F0FDF9; border:1px solid #B3F0DE; }
+        .error-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; margin-bottom:4px; }
+        .error-wrong .error-label { color:#E53535; }
+        .error-correct .error-label { color:var(--success); }
+        .error-phrase { font-size:13px; font-weight:600; color:var(--text); }
+        .recommendation-card { background:linear-gradient(135deg,var(--accent-warm),#FF9500); border-radius:16px; padding:16px; color:white; }
+        .recommendation-card h3 { font-size:14px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+        .recommendation-card p { font-size:13px; opacity:.92; line-height:1.5; }
+        .practice-pill { background:#F5F7FF; border-radius:10px; padding:10px 12px; }
+        .practice-pill h5 { font-size:13px; font-weight:600; color:var(--text); margin-bottom:2px; }
+        .practice-pill p { font-size:11px; color:var(--text-muted); }
+        .no-mission-yet { background:var(--card); border-radius:16px; padding:24px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+        .no-mission-yet p { font-size:14px; color:var(--text-muted); line-height:1.5; }
+
+        /* ── PROGRESS ── */
+        .progress-header { background:linear-gradient(135deg,#00A878 0%,#00C896 100%); padding:52px 20px 24px; color:white; }
+        .progress-header h1 { font-size:24px; font-weight:900; margin-bottom:4px; }
+        .progress-header p { font-size:13px; opacity:.8; }
+        .progress-body { padding:18px 16px; display:flex; flex-direction:column; gap:14px; }
+        .pstats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+        .pstat { background:var(--card); border-radius:14px; padding:14px 8px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+        .pstat-val { font-size:22px; font-weight:900; color:var(--text); display:block; }
+        .pstat-lbl { font-size:10px; color:var(--text-muted); font-weight:500; margin-top:2px; }
+        .skills-section h3 { font-size:14px; font-weight:700; color:var(--text); margin-bottom:10px; }
+        .skill-card { background:var(--card); border-radius:16px; padding:14px; margin-bottom:8px; border:1.5px solid var(--border); display:flex; align-items:center; gap:14px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+        .skill-card.unlocked { border-color:rgba(0,200,150,.35); background:#F8FFFD; }
+        .skill-card.locked { opacity:.4; }
+        .skill-icon { width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+        .skill-card.unlocked .skill-icon { background:linear-gradient(135deg,var(--success),#00E5AE); }
+        .skill-card.locked .skill-icon { background:var(--border); }
+        .skill-content h4 { font-size:14px; font-weight:700; color:var(--text); margin-bottom:2px; }
+        .skill-content p { font-size:12px; color:var(--text-muted); }
+        .skill-badge { font-size:20px; flex-shrink:0; }
+        .reset-btn { background:none; border:1px solid var(--border); border-radius:10px; padding:10px; font-size:12px; color:var(--text-muted); cursor:pointer; width:100%; margin-top:4px; }
+        .reset-btn:hover { background:var(--border); }
+
+        /* ── MODALS ── */
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(10,15,30,.65); z-index:200; align-items:flex-end; justify-content:center; }
+        .modal-overlay.show { display:flex; }
+        .modal-sheet { background:var(--card); border-radius:24px 24px 0 0; padding:32px 24px 40px; width:100%; max-width:430px; text-align:center; animation:slideUp .28s ease; }
+        @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+        .modal-emoji { font-size:64px; margin-bottom:14px; display:block; }
+        .modal-sheet h2 { font-size:22px; font-weight:900; color:var(--text); margin-bottom:8px; }
+        .modal-sheet > p { font-size:14px; color:var(--text-muted); margin-bottom:20px; line-height:1.5; }
+        .skill-unlocked-badge { background:linear-gradient(135deg,var(--success),#00E5AE); border-radius:14px; padding:16px; color:white; margin-bottom:20px; text-align:left; display:flex; align-items:center; gap:12px; }
+        .badge-icon { font-size:32px; }
+        .skill-unlocked-badge p { font-size:11px; color:rgba(255,255,255,.8); margin:0 0 2px; }
+        .skill-unlocked-badge h3 { font-size:15px; font-weight:700; color:white; }
+        .btn-continue { background:linear-gradient(135deg,var(--accent),#FF9A4A); color:white; border:none; border-radius:14px; padding:16px; font-size:15px; font-weight:700; cursor:pointer; width:100%; box-shadow:0 4px 18px rgba(255,107,53,.4); transition:transform .15s; }
+        .btn-continue:active { transform:scale(.97); }
+
+        /* Season complete modal */
+        .season-modal-sheet { background:linear-gradient(160deg,#1E3A6E,#2D5AA0); border-radius:24px 24px 0 0; padding:40px 24px 48px; width:100%; max-width:430px; text-align:center; animation:slideUp .28s ease; color:white; }
+        .season-modal-sheet h2 { font-size:24px; font-weight:900; margin-bottom:10px; }
+        .season-modal-sheet p { font-size:14px; opacity:.85; margin-bottom:24px; line-height:1.5; }
+        .btn-season { background:linear-gradient(135deg,var(--accent-warm),#FF9500); color:white; border:none; border-radius:14px; padding:16px; font-size:15px; font-weight:700; cursor:pointer; width:100%; }
+
+        /* Voice modal */
+        .voice-modal { display:none; position:fixed; inset:0; background:rgba(10,15,30,.65); z-index:200; align-items:flex-end; justify-content:center; }
+        .voice-modal.show { display:flex; }
+        .voice-sheet { background:linear-gradient(160deg,#1E3A6E,#2D5AA0); border-radius:24px 24px 0 0; padding:40px 24px 48px; width:100%; max-width:430px; text-align:center; animation:slideUp .28s ease; color:white; }
+        .voice-sheet h3 { font-size:18px; font-weight:700; margin-bottom:6px; }
+        .voice-sheet > p { font-size:13px; opacity:.7; }
+        .voice-phrase { background:rgba(255,255,255,.1); border-radius:14px; padding:16px; margin:18px 0; font-size:15px; font-weight:700; border:1px solid rgba(255,255,255,.15); min-height:56px; display:flex; align-items:center; justify-content:center; }
+        .mic-btn { width:80px; height:80px; border-radius:50%; background:var(--accent); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:34px; margin:0 auto 16px; animation:micPulse 1.5s infinite; }
+        @keyframes micPulse { 0%{box-shadow:0 0 0 0 rgba(255,107,53,.5)} 70%{box-shadow:0 0 0 22px rgba(255,107,53,0)} 100%{box-shadow:0 0 0 0 rgba(255,107,53,0)} }
+        .voice-hint { font-size:12px; opacity:.5; margin-bottom:20px; }
+        .btn-close-voice { background:rgba(255,255,255,.12); color:white; border:1px solid rgba(255,255,255,.2); border-radius:12px; padding:13px 32px; font-size:14px; font-weight:600; cursor:pointer; }
+
+        /* ── CHAT CON LIA ── */
+        .chat-section { padding:0 16px 16px; display:flex; flex-direction:column; gap:0; }
+        .chat-section-title { font-size:13px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; margin-top:4px; }
+        .api-setup-card { background:var(--card); border-radius:16px; padding:20px; border:1.5px dashed var(--border); text-align:center; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+        .api-setup-card h4 { font-size:15px; font-weight:700; color:var(--text); margin-bottom:6px; }
+        .api-setup-card p { font-size:12px; color:var(--text-muted); line-height:1.5; margin-bottom:16px; }
+        .btn-setup-api { background:linear-gradient(135deg,#667EEA,#764BA2); color:white; border:none; border-radius:12px; padding:12px 20px; font-size:14px; font-weight:700; cursor:pointer; width:100%; }
+        .chat-box { background:var(--card); border-radius:16px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+        .chat-messages { min-height:200px; max-height:360px; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; }
+        .chat-bubble { max-width:82%; padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.5; }
+        .bubble-lia { background:#F0F4FF; color:var(--text); border-bottom-left-radius:4px; align-self:flex-start; border:1px solid #D5DCFF; }
+        .bubble-lia .bubble-name { font-size:10px; font-weight:700; color:#667EEA; margin-bottom:4px; }
+        .bubble-user { background:linear-gradient(135deg,#667EEA,#764BA2); color:white; border-bottom-right-radius:4px; align-self:flex-end; }
+        .bubble-typing { display:flex; align-items:center; gap:4px; }
+        .typing-dot { width:7px; height:7px; border-radius:50%; background:#667EEA; opacity:.4; animation:typingBounce 1.2s infinite; }
+        .typing-dot:nth-child(2) { animation-delay:.2s; }
+        .typing-dot:nth-child(3) { animation-delay:.4s; }
+        @keyframes typingBounce { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-6px);opacity:1} }
+        .chat-suggestions { display:flex; flex-wrap:wrap; gap:6px; padding:10px 16px; border-top:1px solid var(--border); }
+        .suggestion-chip { background:#F0F4FF; border:1px solid #D5DCFF; border-radius:20px; padding:5px 12px; font-size:11px; font-weight:600; color:#4C63D2; cursor:pointer; white-space:nowrap; transition:all .15s; }
+        .suggestion-chip:hover { background:#667EEA; color:white; border-color:#667EEA; }
+        .chat-input-row { display:flex; align-items:center; gap:8px; padding:12px 16px; border-top:1px solid var(--border); background:white; }
+        .chat-input { flex:1; border:1.5px solid var(--border); border-radius:12px; padding:10px 14px; font-size:13px; font-family:inherit; color:var(--text); outline:none; resize:none; transition:border-color .2s; background:var(--bg); }
+        .chat-input:focus { border-color:#667EEA; }
+        .chat-send-btn { width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg,#667EEA,#764BA2); border:none; color:white; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .15s; }
+        .chat-send-btn:active { transform:scale(.92); }
+        .chat-api-badge { display:flex; align-items:center; justify-content:space-between; padding:8px 16px; background:#F8F9FF; border-top:1px solid var(--border); }
+        .chat-api-badge span { font-size:10px; color:var(--text-muted); }
+        .btn-change-key { background:none; border:none; font-size:10px; color:#667EEA; cursor:pointer; font-weight:600; }
+
+        /* ── VOICE MODAL MEJORADO ── */
+        .voice-day-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; opacity:.6; margin-bottom:6px; }
+        .voice-transcript-box { background:rgba(255,255,255,.08); border-radius:12px; padding:10px 14px; margin:14px 0 0; border:1px solid rgba(255,255,255,.12); display:none; }
+        .transcript-label { font-size:10px; text-transform:uppercase; letter-spacing:.8px; opacity:.55; margin-bottom:4px; }
+        .transcript-text { font-size:14px; font-weight:600; min-height:22px; line-height:1.4; }
+        .voice-feedback { border-radius:12px; padding:10px 14px; margin:10px 0 0; font-size:13px; font-weight:600; line-height:1.4; display:none; }
+        .feedback-good { background:rgba(0,200,150,.18); border:1px solid rgba(0,200,150,.4); color:#00E5AE; }
+        .feedback-ok   { background:rgba(255,184,0,.18);  border:1px solid rgba(255,184,0,.4);  color:#FFB800; }
+        .feedback-bad  { background:rgba(255,107,53,.18); border:1px solid rgba(255,107,53,.4); color:#FF9A6C; }
+        .voice-controls { display:flex; align-items:center; justify-content:center; gap:24px; margin:20px 0 6px; }
+        .btn-listen-voice { background:rgba(255,255,255,.12); color:white; border:1px solid rgba(255,255,255,.2); border-radius:12px; padding:11px 20px; font-size:13px; font-weight:600; cursor:pointer; transition:background .2s; }
+        .btn-listen-voice:hover { background:rgba(255,255,255,.22); }
+        .mic-btn.listening { background:#E53535 !important; animation:none !important; }
+        .voice-nav-btns { display:flex; gap:10px; margin-top:16px; }
+        .btn-voice-next  { flex:1; background:rgba(255,255,255,.1); color:white; border:1px solid rgba(255,255,255,.15); border-radius:12px; padding:12px; font-size:13px; font-weight:600; cursor:pointer; }
+        .btn-close-voice { flex:1; background:rgba(255,255,255,.12); color:white; border:1px solid rgba(255,255,255,.2); border-radius:12px; padding:12px; font-size:14px; font-weight:600; cursor:pointer; }
+        .no-speech-support { background:rgba(255,255,255,.08); border-radius:12px; padding:14px; margin:14px 0 0; font-size:12px; opacity:.75; text-align:center; line-height:1.5; }
+
+        /* ── API KEY MODAL ── */
+        .api-modal { display:none; position:fixed; inset:0; background:rgba(10,15,30,.65); z-index:300; align-items:flex-end; justify-content:center; }
+        .api-modal.show { display:flex; }
+        .api-modal-sheet { background:var(--card); border-radius:24px 24px 0 0; padding:32px 24px 40px; width:100%; max-width:430px; animation:slideUp .28s ease; }
+        .api-modal-sheet h3 { font-size:18px; font-weight:800; color:var(--text); margin-bottom:6px; }
+        .api-modal-sheet p { font-size:13px; color:var(--text-muted); line-height:1.5; margin-bottom:20px; }
+        .api-steps { background:#F5F7FF; border-radius:12px; padding:14px; margin-bottom:20px; }
+        .api-steps ol { margin-left:16px; }
+        .api-steps li { font-size:12px; color:var(--text-muted); margin-bottom:6px; line-height:1.4; }
+        .api-steps li strong { color:var(--text); }
+        .api-key-input { width:100%; border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; font-size:13px; font-family:inherit; color:var(--text); outline:none; margin-bottom:12px; transition:border-color .2s; }
+        .api-key-input:focus { border-color:#667EEA; }
+        .btn-save-key { background:linear-gradient(135deg,#667EEA,#764BA2); color:white; border:none; border-radius:12px; padding:14px; font-size:14px; font-weight:700; cursor:pointer; width:100%; margin-bottom:8px; }
+        .btn-cancel-key { background:none; border:1px solid var(--border); border-radius:12px; padding:12px; font-size:13px; color:var(--text-muted); cursor:pointer; width:100%; }
+
+        @media (min-width:430px) {
+            body { padding:20px 0; align-items:flex-start; }
+            .app { border-radius:40px; min-height:calc(100vh - 40px); overflow:hidden; }
+            .bottom-nav { border-radius:0 0 40px 40px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <!-- ═══════════ HOME ═══════════ -->
+    <div id="screen-home" class="screen active">
+        <div class="screen-content">
+            <div class="home-header">
+                <div class="home-header-top">
+                    <div>
+                        <div class="app-logo-title">Live <span>English</span><br>Missions</div>
+                        <div class="app-logo-sub">Tu aventura empieza hoy ✈️</div>
+                    </div>
+                    <div class="user-avatar">👤</div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span class="stat-value streak-value" id="h-streak">🔥 0</span>
+                        <span class="stat-label">días seguidos</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="h-level">⭐ Nv.1</span>
+                        <span class="stat-label">nivel actual</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="h-pct">0%</span>
+                        <span class="stat-label">confianza</span>
+                    </div>
+                </div>
+            </div>
+            <div class="home-body">
+                <!-- Level card -->
+                <div class="level-card">
+                    <div class="level-header">
+                        <div class="level-badge">
+                            <div class="level-icon" id="h-level-icon">🌱</div>
+                            <div class="level-info">
+                                <h3 id="h-level-name">Viajero Principiante</h3>
+                                <p id="h-episode-info">Temporada 1 · Episodio 1 de 7</p>
+                            </div>
+                        </div>
+                        <div class="confidence-pct" id="h-pct2">0%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="h-bar" style="width:0%"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <span>Confianza comunicativa</span>
+                        <span id="h-done-count">0 / 7 misiones</span>
+                    </div>
+                </div>
+
+                <span class="section-label">Misión de hoy</span>
+                <div id="h-mission-card"></div>
+
+                <span class="section-label">Explorar</span>
+                <div class="quick-actions">
+                    <div class="quick-card" onclick="goTo('screen-map')">
+                        <span class="quick-icon">🗺️</span>
+                        <h4>Ver historia</h4>
+                        <p>7 episodios</p>
+                    </div>
+                    <div class="quick-card" onclick="goTo('screen-tutor')">
+                        <span class="quick-icon">👩‍🏫</span>
+                        <h4>Hablar con Lia</h4>
+                        <p>Tu tutora personal</p>
+                    </div>
+                    <div class="quick-card" onclick="goTo('screen-progress')">
+                        <span class="quick-icon">🏆</span>
+                        <h4>Mi progreso</h4>
+                        <p>Habilidades reales</p>
+                    </div>
+                    <div class="quick-card" onclick="goTo('screen-map')">
+                        <span class="quick-icon">📚</span>
+                        <h4>Repasar</h4>
+                        <p>Todas las misiones</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ MAP ═══════════ -->
+    <div id="screen-map" class="screen">
+        <div class="screen-content">
+            <div class="map-header">
+                <div class="season-badge">🎬 Temporada 1</div>
+                <h1>Primer viaje en inglés</h1>
+                <p>Vive una semana como viajero en un país de habla inglesa</p>
+            </div>
+            <div class="map-body">
+                <div class="episode-path" id="episode-path"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ MISSION ═══════════ -->
+    <div id="screen-mission" class="screen">
+        <div class="screen-content">
+            <div class="mission-header">
+                <div class="mission-header-top">
+                    <button class="back-btn" id="m-back-btn">←</button>
+                    <div>
+                        <h2 id="m-title">Cargando...</h2>
+                        <p id="m-subtitle"></p>
+                    </div>
+                </div>
+                <div class="mission-progress-dots" id="m-dots"></div>
+            </div>
+            <div class="mission-body">
+                <div class="scene-card" id="m-scene-card">
+                    <div class="scene-emoji" id="m-scene-emoji"></div>
+                    <div class="scene-info">
+                        <h3 id="m-scene-location"></h3>
+                        <p id="m-scene-desc"></p>
+                    </div>
+                </div>
+                <div class="dialogue-card">
+                    <div class="dialogue-header">
+                        <div class="char-avatar" id="m-char-emoji"></div>
+                        <div class="char-info">
+                            <h4 id="m-char-name"></h4>
+                            <p id="m-char-role"></p>
+                        </div>
+                    </div>
+                    <div class="dialogue-bubble">
+                        <div class="d-en" id="m-dial-en"></div>
+                        <div class="d-es" id="m-dial-es"></div>
+                    </div>
+                </div>
+                <div class="phrases-section">
+                    <h3>🎯 Tus frases para responder</h3>
+                    <div id="m-phrases"></div>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn btn-listen" onclick="listenAll()">
+                        <span class="aicon">🔊</span><span>Escuchar</span>
+                    </button>
+                    <button class="action-btn btn-repeat" onclick="repeatTip()">
+                        <span class="aicon">🔁</span><span>Repetir</span>
+                    </button>
+                    <button class="action-btn btn-simulate" onclick="openVoice()">
+                        <span class="aicon">🎤</span><span>Simular voz</span>
+                    </button>
+                </div>
+                <div class="tutor-feedback">
+                    <div class="lia-mini">👩‍🏫</div>
+                    <div>
+                        <h4>Lia dice:</h4>
+                        <p id="lia-tip">Toca cada frase para escucharla y practicarla.</p>
+                    </div>
+                </div>
+                <div id="m-complete-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ TUTOR ═══════════ -->
+    <div id="screen-tutor" class="screen">
+        <div class="screen-content">
+            <div class="tutor-header">
+                <div class="lia-avatar">👩‍🏫</div>
+                <h1>Hola, soy Lia</h1>
+                <p>Tu tutora personal de inglés</p>
+            </div>
+            <div class="tutor-body" id="tutor-body"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════ PROGRESS ═══════════ -->
+    <div id="screen-progress" class="screen">
+        <div class="screen-content">
+            <div class="progress-header">
+                <h1>Mi progreso</h1>
+                <p>Estas son habilidades reales que ya tienes</p>
+            </div>
+            <div class="progress-body" id="progress-body"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" id="nav-home"     onclick="goTo('screen-home')">    <span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
+        <button class="nav-item"        id="nav-map"      onclick="goTo('screen-map')">     <span class="nav-icon">🗺️</span><span class="nav-label">Historia</span></button>
+        <button class="nav-item"        id="nav-mission"  onclick="goTo('screen-mission')"> <span class="nav-icon">🎯</span><span class="nav-label">Misión</span></button>
+        <button class="nav-item"        id="nav-tutor"    onclick="goTo('screen-tutor')">   <span class="nav-icon">👩‍🏫</span><span class="nav-label">Lia</span></button>
+        <button class="nav-item"        id="nav-progress" onclick="goTo('screen-progress')")><span class="nav-icon">📈</span><span class="nav-label">Progreso</span></button>
+    </nav>
+</div>
+
+<!-- API Key Modal -->
+<div class="api-modal" id="api-modal">
+    <div class="api-modal-sheet">
+        <h3>🔑 Configura Gemini</h3>
+        <p>Ingresa tu clave gratuita de Gemini para activar el chat en tiempo real con Lia.</p>
+        <div class="api-steps">
+            <ol>
+                <li>Ve a <strong>aistudio.google.com</strong> en tu navegador</li>
+                <li>Inicia sesión con tu cuenta de Google</li>
+                <li>Haz clic en <strong>"Get API Key"</strong> → <strong>"Create API Key"</strong></li>
+                <li>Copia la clave y pégala aquí abajo</li>
+            </ol>
+        </div>
+        <input class="api-key-input" id="api-key-input" type="password" placeholder="Pega tu clave de Gemini aquí..." />
+        <button class="btn-save-key" onclick="saveApiKey()">✓ Guardar y activar chat</button>
+        <button class="btn-cancel-key" onclick="closeApiModal()">Cancelar</button>
+    </div>
+</div>
+
+<!-- Voice Modal -->
+<div class="voice-modal" id="voice-modal">
+    <div class="voice-sheet">
+        <div class="voice-day-label" id="v-label">Día 1 · Frase 1 de 4</div>
+        <h3>Di esta frase en voz alta</h3>
+        <div class="voice-phrase" id="voice-phrase-text"></div>
+        <div class="voice-transcript-box" id="v-transcript-box">
+            <div class="transcript-label">Lo que escuché:</div>
+            <div class="transcript-text" id="v-transcript"></div>
+        </div>
+        <div class="voice-feedback" id="v-feedback"></div>
+        <div class="voice-controls">
+            <button class="btn-listen-voice" onclick="speakVoicePhrase()">🔊 Escuchar</button>
+            <button class="mic-btn" id="mic-btn" onclick="toggleRecognition()">🎤</button>
+        </div>
+        <div class="voice-hint" id="v-hint">Toca 🔊 para escuchar la frase, luego 🎤 para repetirla</div>
+        <div class="voice-nav-btns">
+            <button class="btn-voice-next" onclick="voiceNext()" id="v-next-btn">Siguiente →</button>
+            <button class="btn-close-voice" onclick="closeVoice()">✓ Terminar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Mission Complete Modal -->
+<div class="modal-overlay" id="complete-modal">
+    <div class="modal-sheet">
+        <span class="modal-emoji" id="cm-emoji">🎉</span>
+        <h2 id="cm-title">¡Misión completada!</h2>
+        <p id="cm-desc"></p>
+        <div class="skill-unlocked-badge">
+            <div class="badge-icon" id="cm-skill-icon">👋</div>
+            <div>
+                <p>Habilidad desbloqueada</p>
+                <h3 id="cm-skill-name"></h3>
+            </div>
+        </div>
+        <button class="btn-continue" id="cm-btn" onclick="closeComplete()">Ver mi progreso →</button>
+    </div>
+</div>
+
+<!-- Season Complete Modal -->
+<div class="modal-overlay" id="season-modal">
+    <div class="season-modal-sheet">
+        <div style="font-size:72px;margin-bottom:16px;">🏆</div>
+        <h2>¡Temporada 1 completada!</h2>
+        <p>En 7 días pasaste de no saber nada a poder presentarte, pedir ayuda, tomar un taxi, hacer check-in, pedir comida y resolver problemas. <strong>¡Eso es inglés real!</strong></p>
+        <button class="btn-season" onclick="closeSeasonModal()">Ver mis logros 🎖️</button>
+    </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+//  DATA — 7 MISIONES
+// ════════════════════════════════════════════════
+const MISSIONS = [
+  {
+    day: 1,
+    mapTitle: 'Presentarte',
+    title: 'Preséntate en inglés',
+    sceneColors: 'linear-gradient(135deg,#667EEA 0%,#764BA2 100%)',
+    scene: { emoji:'✈️', location:'Aeropuerto Internacional', desc:'Un agente de inmigración te detiene. Necesitas presentarte y explicar tu situación.' },
+    character: { emoji:'👮', name:'Officer Johnson', role:'Agente de inmigración' },
+    dialogue: { en:'"Hello. What is your name and where are you from?"', es:'Hola. ¿Cuál es tu nombre y de dónde eres?' },
+    phrases: [
+      { en:'Hi, my name is Carlos.', es:'Hola, mi nombre es Carlos.' },
+      { en:'I am from Colombia.',    es:'Soy de Colombia.' },
+      { en:"I don't speak English very well.", es:'No hablo inglés muy bien.' },
+      { en:'Can you help me, please?', es:'¿Puedes ayudarme, por favor?' },
+    ],
+    skill:'Presentarte en inglés', skillIcon:'👋',
+    liaMessage:'¡Completaste tu primera misión! Eso ya te pone por delante del 90% de las personas que quieren aprender inglés pero nunca empiezan.',
+    liaErrors:[
+      { wrong:'"I am Carlos"', correct:'"My name is Carlos" o "I\'m Carlos"' },
+      { wrong:'"I no speak English"', correct:'"I don\'t speak English very well"' },
+    ],
+    liaRec:'Mañana aprenderás a pedir ayuda. La frase clave: "Can you repeat, please?"',
+    liaPractice:['Hi, my name is ___.','I am from ___.','Can you help me, please?'],
+  },
+  {
+    day: 2,
+    mapTitle: 'Pedir ayuda',
+    title: 'Pide ayuda',
+    sceneColors: 'linear-gradient(135deg,#11998e 0%,#38ef7d 100%)',
+    scene: { emoji:'🛄', location:'Llegadas del Aeropuerto', desc:'Estás perdido en el aeropuerto. No encuentras tu maleta. Necesitas pedir ayuda.' },
+    character: { emoji:'👩‍✈️', name:'Maria', role:'Empleada del aeropuerto' },
+    dialogue: { en:'"Hello, can I help you? You look a little lost."', es:'Hola, ¿puedo ayudarte? Pareces un poco perdido.' },
+    phrases: [
+      { en:'Can you help me, please?', es:'¿Puedes ayudarme, por favor?' },
+      { en:"I don't understand.",     es:'No entiendo.' },
+      { en:'Can you repeat, please?', es:'¿Puedes repetir, por favor?' },
+      { en:'Please speak slowly.',    es:'Por favor habla más despacio.' },
+    ],
+    skill:'Pedir ayuda', skillIcon:'🙋',
+    liaMessage:'¡Excelente! Ya sabes pedir ayuda en inglés. Estas frases te salvarán la vida cuando no entiendas algo.',
+    liaErrors:[
+      { wrong:'"I no understand"', correct:'"I don\'t understand"' },
+      { wrong:'"Speak more slowly"', correct:'"Please speak slowly" o "Can you speak more slowly?"' },
+    ],
+    liaRec:'Mañana aprenderás a pedir transporte. La frase clave: "I need a taxi, please."',
+    liaPractice:['Can you repeat, please?',"I don't understand.",'Please speak slowly.'],
+  },
+  {
+    day: 3,
+    mapTitle: 'Pedir un taxi',
+    title: 'Pide un taxi',
+    sceneColors: 'linear-gradient(135deg,#f7971e 0%,#ffd200 100%)',
+    scene: { emoji:'🚕', location:'Afuera del Aeropuerto', desc:'Saliste del aeropuerto y necesitas llegar a tu hotel. Ves la fila de taxis y te acercas al conductor.' },
+    character: { emoji:'🚗', name:'Driver Mike', role:'Taxista' },
+    dialogue: { en:'"Hey! Need a cab? Where are you going?"', es:'¡Hola! ¿Necesitas taxi? ¿A dónde vas?' },
+    phrases: [
+      { en:'I need a taxi, please.',           es:'Necesito un taxi, por favor.' },
+      { en:'I need to go to my hotel.',        es:'Necesito ir a mi hotel.' },
+      { en:'Can you take me to this address?', es:'¿Puedes llevarme a esta dirección?' },
+      { en:'How much is it?',                  es:'¿Cuánto cuesta?' },
+    ],
+    skill:'Pedir transporte', skillIcon:'🚕',
+    liaMessage:'¡Muy bien! Ya puedes moverte por una ciudad de habla inglesa. Saber pedir transporte es fundamental.',
+    liaErrors:[
+      { wrong:'"I want taxi"', correct:'"I need a taxi, please"' },
+      { wrong:'"How much cost?"', correct:'"How much is it?"' },
+    ],
+    liaRec:'Mañana aprenderás a hacer check-in en tu hotel. La frase clave: "I have a reservation."',
+    liaPractice:['I need a taxi, please.','How much is it?','Can you take me to this address?'],
+  },
+  {
+    day: 4,
+    mapTitle: 'Check-in en hotel',
+    title: 'Haz el check-in',
+    sceneColors: 'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)',
+    scene: { emoji:'🏨', location:'Recepción del Hotel', desc:'Llegaste al hotel. Es tarde y estás cansado. La recepcionista te espera para hacer el check-in.' },
+    character: { emoji:'👩‍💼', name:'Sarah', role:'Recepcionista del hotel' },
+    dialogue: { en:'"Good evening! Welcome. Do you have a reservation?"', es:'¡Buenas noches! Bienvenido. ¿Tiene una reservación?' },
+    phrases: [
+      { en:'I have a reservation.',    es:'Tengo una reservación.' },
+      { en:'My name is Carlos.',       es:'Mi nombre es Carlos.' },
+      { en:'Can I check in, please?',  es:'¿Puedo hacer el check-in, por favor?' },
+      { en:'Here is my passport.',     es:'Aquí está mi pasaporte.' },
+    ],
+    skill:'Hacer check-in en un hotel', skillIcon:'🏨',
+    liaMessage:'¡Fantástico! Ya puedes llegar a cualquier hotel del mundo y hacer tu check-in con confianza.',
+    liaErrors:[
+      { wrong:'"I have reservation"', correct:'"I have A reservation"' },
+      { wrong:'"Here my passport"', correct:'"Here IS my passport"' },
+    ],
+    liaRec:'Mañana aprenderás a pedir comida en un restaurante. La frase clave: "Can I have a coffee, please?"',
+    liaPractice:['I have a reservation.','Can I check in, please?','Here is my passport.'],
+  },
+  {
+    day: 5,
+    mapTitle: 'Pedir comida',
+    title: 'Pide comida',
+    sceneColors: 'linear-gradient(135deg,#c94b4b 0%,#4b134f 100%)',
+    scene: { emoji:'🍽️', location:'Restaurante del hotel', desc:'Bajaste al restaurante. Tienes hambre. El mesero se acerca a tu mesa para tomar tu orden.' },
+    character: { emoji:'🧑‍🍳', name:'James', role:'Mesero' },
+    dialogue: { en:'"Good morning! Are you ready to order?"', es:'¡Buenos días! ¿Está listo para ordenar?' },
+    phrases: [
+      { en:'Can I have a coffee, please?',     es:'¿Me puede traer un café, por favor?' },
+      { en:'I would like chicken, please.',    es:'Quisiera pollo, por favor.' },
+      { en:'The bill, please.',                es:'La cuenta, por favor.' },
+      { en:'Thank you very much.',             es:'Muchas gracias.' },
+    ],
+    skill:'Pedir comida en un restaurante', skillIcon:'🍽️',
+    liaMessage:'¡Increíble progreso! Ya puedes ir a cualquier restaurante y pedir lo que quieras en inglés. Eso es independencia real.',
+    liaErrors:[
+      { wrong:'"Give me a coffee"', correct:'"Can I have a coffee, please?" (más educado)' },
+      { wrong:'"I want chicken"', correct:'"I would like chicken, please" (más formal)' },
+    ],
+    liaRec:'Mañana aprenderás a explicar un problema. Muy útil si algo sale mal. La frase clave: "There is a problem."',
+    liaPractice:['Can I have ___, please?','I would like ___, please.','The bill, please.'],
+  },
+  {
+    day: 6,
+    mapTitle: 'Explicar un problema',
+    title: 'Explica un problema',
+    sceneColors: 'linear-gradient(135deg,#373B44 0%,#4286f4 100%)',
+    scene: { emoji:'🔑', location:'Recepción del hotel — noche', desc:'Llegaste a tu habitación pero la llave no funciona. Bajas a recepción para explicar el problema.' },
+    character: { emoji:'🧑‍💼', name:'Tom', role:'Conserje del hotel' },
+    dialogue: { en:'"Good evening! How can I help you tonight?"', es:'¡Buenas noches! ¿En qué puedo ayudarle esta noche?' },
+    phrases: [
+      { en:'I need help.',                     es:'Necesito ayuda.' },
+      { en:'There is a problem.',              es:'Hay un problema.' },
+      { en:"My room key doesn't work.",        es:'La llave de mi habitación no funciona.' },
+      { en:'Can you help me, please?',         es:'¿Puedes ayudarme, por favor?' },
+    ],
+    skill:'Explicar un problema simple', skillIcon:'⚠️',
+    liaMessage:'¡Excelente! Ya sabes cómo reaccionar cuando algo sale mal. Comunicarte en momentos difíciles es una habilidad muy valiosa.',
+    liaErrors:[
+      { wrong:'"Key no work"', correct:'"My room key doesn\'t work"' },
+      { wrong:'"I have problem"', correct:'"There IS a problem" o "I HAVE a problem"' },
+    ],
+    liaRec:'¡Mañana es el gran día! La conversación final combina todo lo que aprendiste. ¡Tú puedes!',
+    liaPractice:['There is a problem.',"My ___ doesn't work.",'I need help, please.'],
+  },
+  {
+    day: 7,
+    mapTitle: '🏆 Conversación final',
+    title: '¡Conversación final!',
+    sceneColors: 'linear-gradient(135deg,#FF6B35 0%,#FFB800 100%)',
+    scene: { emoji:'🌍', location:'¡Tu último día de misión!', desc:'Combinas todo lo que aprendiste en una sola conversación. Presentarte, pedir ayuda, transporte, hotel y comida.' },
+    character: { emoji:'🙋', name:'Alex', role:'Persona local amigable' },
+    dialogue: { en:'"Hi there! You seem like a traveler. Can I help you with anything?"', es:'¡Hola! Pareces ser un viajero. ¿Puedo ayudarte en algo?' },
+    phrases: [
+      { en:'Hi, my name is Carlos. I am from Colombia.', es:'Hola, me llamo Carlos. Soy de Colombia.' },
+      { en:'I need a taxi to my hotel, please.',         es:'Necesito un taxi a mi hotel, por favor.' },
+      { en:'I have a reservation. Can I check in?',      es:'Tengo una reservación. ¿Puedo hacer check-in?' },
+      { en:'Can you help me? There is a problem.',       es:'¿Puedes ayudarme? Hay un problema.' },
+    ],
+    skill:'Sobrevivir un viaje completo en inglés', skillIcon:'🏆',
+    liaMessage:'¡LO LOGRASTE! Completaste las 7 misiones. Hace una semana no podías decir ni una frase en inglés, y hoy ya puedes presentarte, pedir ayuda, tomar un taxi, hacer check-in, pedir comida y resolver problemas. ¡Eso es REAL!',
+    liaErrors:[],
+    liaRec:'¡Felicidades! Ya estás listo para la Temporada 2: "En la oficina en inglés". ¡Sigue adelante!',
+    liaPractice:['Hi, my name is ___.','I need a taxi, please.','Can you help me? There is a problem.'],
+  },
+];
+
+const LEVELS = [
+  { name:'Viajero Principiante', icon:'🌱', min:0  },
+  { name:'Explorador Valiente',  icon:'🌿', min:1  },
+  { name:'Viajero Confiado',     icon:'🌟', min:3  },
+  { name:'Comunicador Global',   icon:'🚀', min:5  },
+  { name:'Maestro del Viaje',    icon:'🏆', min:7  },
+];
+
+// ════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════
+let S = { completedDays:[], streak:0, lastDate:null };
+
+function loadState() {
+    try { S = JSON.parse(localStorage.getItem('lem-v1') || 'null') || S; } catch(e){}
+}
+
+function saveState() {
+    localStorage.setItem('lem-v1', JSON.stringify(S));
+}
+
+function resetState() {
+    if (!confirm('¿Reiniciar todo el progreso?')) return;
+    localStorage.removeItem('lem-v1');
+    S = { completedDays:[], streak:0, lastDate:null };
+    currentMissionDay = null;
+    practiced.clear();
+    renderAll();
+    goTo('screen-home');
+}
+
+// ════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════
+function getConfidence() {
+    const n = S.completedDays.length;
+    return n === 0 ? 0 : Math.round(n / 7 * 100);
+}
+
+function getLevel() {
+    const n = S.completedDays.length;
+    let lv = LEVELS[0];
+    for (const l of LEVELS) { if (n >= l.min) lv = l; }
+    return lv;
+}
+
+function getNextDay() {
+    for (let d = 1; d <= 7; d++) {
+        if (!S.completedDays.includes(d)) return d;
+    }
+    return null; // all done
+}
+
+function episodeState(day) {
+    if (S.completedDays.includes(day)) return 'completed';
+    const next = getNextDay();
+    if (day === next) return 'available';
+    return 'locked';
+}
+
+// ════════════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════════════
+function goTo(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+    const navId = 'nav-' + screenId.replace('screen-', '');
+    const nav = document.getElementById(navId);
+    if (nav) nav.classList.add('active');
+    const sc = document.querySelector('#' + screenId + ' .screen-content');
+    if (sc) sc.scrollTop = 0;
+
+    // Lazy render when navigating
+    if (screenId === 'screen-home')     renderHome();
+    if (screenId === 'screen-map')      renderMap();
+    if (screenId === 'screen-tutor')    renderTutor();
+    if (screenId === 'screen-progress') renderProgress();
+    if (screenId === 'screen-mission' && !currentMissionDay) openMission(getNextDay() || 1);
+}
+
+// ════════════════════════════════════════════════
+//  HOME
+// ════════════════════════════════════════════════
+function renderHome() {
+    const pct = getConfidence();
+    const lv  = getLevel();
+    const n   = S.completedDays.length;
+    const next = getNextDay();
+
+    document.getElementById('h-streak').textContent   = '🔥 ' + S.streak;
+    document.getElementById('h-level').textContent    = '⭐ Nv.' + (LEVELS.indexOf(lv) + 1);
+    document.getElementById('h-pct').textContent      = pct + '%';
+    document.getElementById('h-level-icon').textContent = lv.icon;
+    document.getElementById('h-level-name').textContent = lv.name;
+    document.getElementById('h-pct2').textContent     = pct + '%';
+    document.getElementById('h-episode-info').textContent = `Temporada 1 · Episodio ${Math.min(n + 1, 7)} de 7`;
+    document.getElementById('h-done-count').textContent   = `${n} / 7 misiones`;
+    document.getElementById('h-bar').style.width = pct + '%';
+
+    const card = document.getElementById('h-mission-card');
+    if (next) {
+        const m = MISSIONS[next - 1];
+        const done = S.completedDays.includes(next);
+        card.innerHTML = `
+        <div class="mission-card${done ? ' completed-card' : ''}" onclick="openAndGoMission(${next})">
+            <div class="mission-tag">📍 Día ${next} · Temporada 1</div>
+            <h2>${m.title}</h2>
+            <p>${m.scene.desc}</p>
+            <div class="mission-meta">
+                <div class="mission-meta-item">⏱ 5 min</div>
+                <div class="mission-meta-item">🎯 4 frases</div>
+                <div class="mission-meta-item">⭐ +10 XP</div>
+            </div>
+            <button class="btn-mission" onclick="event.stopPropagation();openAndGoMission(${next})">
+                ▶&nbsp; Empezar misión
+            </button>
+        </div>`;
+    } else {
+        card.innerHTML = `
+        <div class="mission-card completed-card">
+            <div class="mission-tag">🏆 Temporada 1 — Completada</div>
+            <h2>¡Misión cumplida!</h2>
+            <p>Completaste las 7 misiones de la primera temporada. ¡Eres un Maestro del Viaje!</p>
+            <button class="btn-mission" onclick="goTo('screen-progress')">Ver mis logros →</button>
+        </div>`;
+    }
+}
+
+// ════════════════════════════════════════════════
+//  MAP
+// ════════════════════════════════════════════════
+function renderMap() {
+    const path = document.getElementById('episode-path');
+    path.innerHTML = '';
+    MISSIONS.forEach((m, i) => {
+        const isLast = i === MISSIONS.length - 1;
+        const st = episodeState(m.day);
+        const icon = st === 'completed' ? '✅' : st === 'available' ? '🎯' : '🔒';
+        const dayLabel = st === 'available'  ? `Día ${m.day} · Disponible ahora` :
+                         st === 'completed'  ? `Día ${m.day} · Completado` :
+                                              `Día ${m.day} · Bloqueado`;
+        const click = (st !== 'locked') ? `onclick="openAndGoMission(${m.day})"` : '';
+        const lineClass = st === 'completed' ? 'episode-line done' : 'episode-line';
+        path.innerHTML += `
+        <div class="episode-row ${st}">
+            <div class="episode-left">
+                <div class="episode-dot ${st}">${icon}</div>
+                ${!isLast ? `<div class="${lineClass}"></div>` : ''}
+            </div>
+            <div class="episode-info" ${click}>
+                <div class="ep-day ${st}">${dayLabel}</div>
+                <div class="ep-title">${m.mapTitle}</div>
+                <div class="ep-skill">Habilidad: ${m.skill}</div>
+            </div>
+        </div>`;
+    });
+}
+
+// ════════════════════════════════════════════════
+//  MISSION
+// ════════════════════════════════════════════════
+let currentMissionDay = null;
+const practiced = new Set();
+
+function openAndGoMission(day) {
+    openMission(day);
+    goTo('screen-mission');
+}
+
+function openMission(day) {
+    if (!day) return;
+    currentMissionDay = day;
+    practiced.clear();
+    const m = MISSIONS[day - 1];
+    const isDone = S.completedDays.includes(day);
+
+    // Header
+    document.getElementById('m-title').textContent    = `Día ${day}: ${m.mapTitle}`;
+    document.getElementById('m-subtitle').textContent = `Temporada 1 · ${m.scene.location}`;
+    document.getElementById('m-back-btn').onclick = () => goTo('screen-home');
+
+    // Dots
+    const dotsEl = document.getElementById('m-dots');
+    dotsEl.innerHTML = m.phrases.map((_, i) => `<div class="pdot ${i === 0 ? 'current' : ''}" id="pd${i+1}"></div>`).join('');
+
+    // Scene
+    document.getElementById('m-scene-card').style.background = m.sceneColors;
+    document.getElementById('m-scene-emoji').textContent    = m.scene.emoji;
+    document.getElementById('m-scene-location').textContent = m.scene.location;
+    document.getElementById('m-scene-desc').textContent     = m.scene.desc;
+
+    // Character
+    document.getElementById('m-char-emoji').textContent = m.character.emoji;
+    document.getElementById('m-char-name').textContent  = m.character.name;
+    document.getElementById('m-char-role').textContent  = m.character.role;
+
+    // Dialogue
+    document.getElementById('m-dial-en').textContent = m.dialogue.en;
+    document.getElementById('m-dial-es').textContent = m.dialogue.es;
+
+    // Phrases
+    const pEl = document.getElementById('m-phrases');
+    pEl.innerHTML = m.phrases.map((ph, i) => `
+        <div class="phrase-card" id="pc${i+1}" onclick="practicePhrase(${i+1})">
+            <div>
+                <div class="phrase-en">${ph.en}</div>
+                <div class="phrase-es">${ph.es}</div>
+            </div>
+            <div class="phrase-btn" id="pb${i+1}">🔊</div>
+        </div>`).join('');
+
+    // Lia tip
+    document.getElementById('lia-tip').innerHTML = isDone
+        ? '¡Ya completaste esta misión! Puedes repasar las frases cuando quieras.'
+        : 'Toca cada frase para escucharla y practicarla. Cuando estés listo, presiona <strong>Simular voz</strong>.';
+
+    // Complete area
+    const ca = document.getElementById('m-complete-area');
+    if (isDone) {
+        ca.innerHTML = `<div class="already-done-banner"><p>✅ Misión completada — Habilidad desbloqueada: ${m.skill}</p></div>`;
+        // Mark all phrases as done visually
+        setTimeout(() => m.phrases.forEach((_, i) => markPhraseDone(i + 1)), 50);
+    } else {
+        ca.innerHTML = `<button class="btn-complete" id="btn-complete" onclick="completeMission()" style="opacity:.35;pointer-events:none;">✓ &nbsp;Completar misión</button>`;
+    }
+}
+
+function markPhraseDone(n) {
+    const card = document.getElementById('pc' + n);
+    const btn  = document.getElementById('pb' + n);
+    if (card) card.className = 'phrase-card done';
+    if (btn)  btn.textContent = '✓';
+}
+
+function practicePhrase(n) {
+    if (S.completedDays.includes(currentMissionDay)) {
+        speak(MISSIONS[currentMissionDay - 1].phrases[n - 1].en);
+        return;
+    }
+    practiced.add(n);
+    markPhraseDone(n);
+    speak(MISSIONS[currentMissionDay - 1].phrases[n - 1].en);
+
+    // Update progress dots
+    const total = MISSIONS[currentMissionDay - 1].phrases.length;
+    for (let i = 1; i <= total; i++) {
+        const el = document.getElementById('pd' + i);
+        if (!el) continue;
+        if (practiced.has(i))   { el.className = 'pdot done'; }
+        else if (i === n + 1)   { el.className = 'pdot current'; }
+    }
+
+    const remaining = total - practiced.size;
+    const tip = document.getElementById('lia-tip');
+    if (remaining > 0) {
+        tip.innerHTML = `¡Bien! Te ${remaining === 1 ? 'falta' : 'faltan'} <strong>${remaining} frase${remaining > 1 ? 's' : ''}</strong>. Sigue practicando.`;
+    } else {
+        tip.innerHTML = '¡Excelente! Practicaste todas las frases. Ahora presiona <strong>Simular voz</strong> para hablar en voz alta.';
+        enableComplete();
+    }
+}
+
+function enableComplete() {
+    const btn = document.getElementById('btn-complete');
+    if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+}
+
+// ════════════════════════════════════════════════
+//  TTS — selecciona voz inglesa nativa si existe
+// ════════════════════════════════════════════════
+let englishVoice = null;
+
+function loadVoices() {
+    const voices = speechSynthesis.getVoices();
+    // Prefer native en-US female voices (sounds more natural for learners)
+    const preferred = ['Samantha','Google US English','Microsoft Aria','Zira','Karen','Moira'];
+    for (const name of preferred) {
+        const v = voices.find(v => v.name.includes(name) && v.lang.startsWith('en'));
+        if (v) { englishVoice = v; return; }
+    }
+    // fallback: any en-US voice
+    englishVoice = voices.find(v => v.lang === 'en-US') ||
+                   voices.find(v => v.lang.startsWith('en')) || null;
+}
+
+if ('speechSynthesis' in window) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+}
+
+function speak(text, rate = 0.82) {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = rate;
+    if (englishVoice) u.voice = englishVoice;
+    speechSynthesis.speak(u);
+}
+
+function listenAll() {
+    if (!('speechSynthesis' in window)) return;
+    const phrases = MISSIONS[currentMissionDay - 1].phrases;
+    speechSynthesis.cancel();
+    let i = 0;
+    function next() {
+        if (i >= phrases.length) return;
+        const u = new SpeechSynthesisUtterance(phrases[i].en);
+        u.lang = 'en-US'; u.rate = 0.82;
+        if (englishVoice) u.voice = englishVoice;
+        u.onend = () => { i++; setTimeout(next, 600); };
+        speechSynthesis.speak(u);
+    }
+    next();
+    document.getElementById('lia-tip').innerHTML = '🔊 Escucha con atención la pronunciación de cada frase.';
+}
+
+function repeatTip() {
+    document.getElementById('lia-tip').innerHTML = 'Toca cada frase para escucharla y marcarla como practicada.';
+}
+
+// ════════════════════════════════════════════════
+//  VOICE MODAL — reconocimiento de voz real
+// ════════════════════════════════════════════════
+let voicePhraseIdx = 0;
+let isListening    = false;
+let recognition    = null;
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+
+function openVoice() {
+    voicePhraseIdx = 0;
+    renderVoicePhrase();
+    document.getElementById('voice-modal').classList.add('show');
+}
+
+function renderVoicePhrase() {
+    if (!currentMissionDay) return;
+    const phrases = MISSIONS[currentMissionDay - 1].phrases;
+    const phrase  = phrases[voicePhraseIdx];
+    const total   = phrases.length;
+
+    document.getElementById('v-label').textContent        = `Día ${currentMissionDay} · Frase ${voicePhraseIdx + 1} de ${total}`;
+    document.getElementById('voice-phrase-text').textContent = phrase.en;
+    document.getElementById('v-transcript-box').style.display = 'none';
+    document.getElementById('v-transcript').textContent   = '';
+    document.getElementById('v-feedback').style.display   = 'none';
+    document.getElementById('v-feedback').textContent     = '';
+    document.getElementById('v-hint').textContent         = 'Toca 🔊 para escuchar, luego 🎤 para repetir';
+    document.getElementById('v-next-btn').textContent     = voicePhraseIdx < total - 1 ? 'Siguiente →' : 'Finalizar ✓';
+
+    resetMicBtn();
+
+    if (!SR) {
+        const box = document.getElementById('v-transcript-box');
+        box.style.display = 'block';
+        document.getElementById('v-transcript').innerHTML =
+            '⚠️ Tu navegador no soporta reconocimiento de voz.<br>Usa <strong>Chrome</strong> o <strong>Edge</strong> para activarlo.';
+    }
+}
+
+function speakVoicePhrase() {
+    if (!currentMissionDay) return;
+    const phrase = MISSIONS[currentMissionDay - 1].phrases[voicePhraseIdx];
+    speak(phrase.en, 0.75);
+}
+
+function toggleRecognition() {
+    if (isListening) { stopListening(); return; }
+    if (!SR) { speakVoicePhrase(); return; }
+    startListening();
+}
+
+function startListening() {
+    if (recognition) recognition.abort();
+    recognition = new SR();
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 3;
+
+    isListening = true;
+    const micBtn = document.getElementById('mic-btn');
+    micBtn.textContent = '⏹';
+    micBtn.classList.add('listening');
+    document.getElementById('v-hint').textContent = '🔴 Escuchando… habla ahora';
+    document.getElementById('v-transcript-box').style.display = 'block';
+    document.getElementById('v-transcript').textContent = '…';
+
+    recognition.onresult = (e) => {
+        let interim = '', final = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+            if (e.results[i].isFinal) final = e.results[i][0].transcript;
+            else interim = e.results[i][0].transcript;
+        }
+        document.getElementById('v-transcript').textContent = final || interim || '…';
+        if (final) showVoiceFeedback(final);
+    };
+
+    recognition.onerror = (e) => {
+        resetMicBtn();
+        isListening = false;
+        const msgs = {
+            'no-speech':   'No te escuché. Acércate al micrófono e intenta de nuevo.',
+            'not-allowed': '⚠️ Permiso de micrófono denegado. Habilítalo en tu navegador.',
+            'network':     'Error de red. Verifica tu conexión.',
+        };
+        document.getElementById('v-hint').textContent = msgs[e.error] || 'Error. Intenta de nuevo.';
+    };
+
+    recognition.onend = () => { isListening = false; resetMicBtn(); };
+
+    recognition.start();
+}
+
+function stopListening() {
+    if (recognition) recognition.stop();
+    isListening = false;
+    resetMicBtn();
+}
+
+function resetMicBtn() {
+    const btn = document.getElementById('mic-btn');
+    if (!btn) return;
+    btn.textContent = '🎤';
+    btn.classList.remove('listening');
+}
+
+function showVoiceFeedback(transcript) {
+    const phrase = MISSIONS[currentMissionDay - 1].phrases[voicePhraseIdx].en;
+    const score  = voiceScore(transcript, phrase);
+    const fb     = document.getElementById('v-feedback');
+    fb.style.display = 'block';
+    fb.className = 'voice-feedback';
+
+    if (score >= 0.75) {
+        fb.classList.add('feedback-good');
+        fb.innerHTML = '✅ ¡Excelente pronunciación!';
+        practicePhrase(voicePhraseIdx + 1);
+        document.getElementById('v-hint').textContent = 'Toca "Siguiente" para continuar con la próxima frase.';
+    } else if (score >= 0.45) {
+        fb.classList.add('feedback-ok');
+        fb.innerHTML = `⚠️ Casi bien. Intenta: <em>"${phrase}"</em>`;
+        document.getElementById('v-hint').textContent = 'Toca 🎤 para intentar de nuevo.';
+    } else {
+        fb.classList.add('feedback-bad');
+        fb.innerHTML = `🔄 No te entendí bien. La frase es: <em>"${phrase}"</em>`;
+        document.getElementById('v-hint').textContent = 'Toca 🔊 para escuchar y luego 🎤 para repetir.';
+    }
+}
+
+function voiceScore(transcript, expected) {
+    const clean   = s => s.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/).filter(Boolean);
+    const got      = clean(transcript);
+    const exp      = clean(expected);
+    if (!exp.length) return 0;
+    const matches  = got.filter(w => exp.includes(w)).length;
+    return matches / exp.length;
+}
+
+function voiceNext() {
+    if (recognition) recognition.abort();
+    isListening = false;
+    const total = MISSIONS[currentMissionDay - 1].phrases.length;
+    if (voicePhraseIdx < total - 1) {
+        voicePhraseIdx++;
+        renderVoicePhrase();
+    } else {
+        closeVoice();
+    }
+}
+
+function closeVoice() {
+    if (recognition) recognition.abort();
+    isListening = false;
+    document.getElementById('voice-modal').classList.remove('show');
+    // Mark all phrases as practiced
+    const total = MISSIONS[currentMissionDay - 1].phrases.length;
+    for (let i = 1; i <= total; i++) {
+        if (!practiced.has(i)) { practiced.add(i); markPhraseDone(i); }
+    }
+    enableComplete();
+    document.getElementById('lia-tip').innerHTML =
+        '¡Muy bien! Practicaste en voz alta. Presiona <strong>Completar misión</strong> cuando estés listo.';
+}
+
+// ── Complete ──
+function completeMission() {
+    const day = currentMissionDay;
+    if (!S.completedDays.includes(day)) {
+        S.completedDays.push(day);
+        // Update streak
+        const today = new Date().toDateString();
+        if (S.lastDate !== today) {
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            S.streak = (S.lastDate === yesterday) ? S.streak + 1 : 1;
+            S.lastDate = today;
+        }
+        saveState();
+    }
+
+    const m = MISSIONS[day - 1];
+    document.getElementById('cm-emoji').textContent      = day === 7 ? '🏆' : '🎉';
+    document.getElementById('cm-title').textContent      = day === 7 ? '¡Temporada 1 completada!' : '¡Misión completada!';
+    document.getElementById('cm-desc').textContent       = day === 7
+        ? '¡Increíble! Terminaste las 7 misiones y desbloqueaste la habilidad final.'
+        : `Completaste el Día ${day}. ¡Eso es un logro real!`;
+    document.getElementById('cm-skill-icon').textContent = m.skillIcon;
+    document.getElementById('cm-skill-name').textContent = m.skill;
+
+    if (day === 7) {
+        document.getElementById('cm-btn').onclick = () => {
+            document.getElementById('complete-modal').classList.remove('show');
+            document.getElementById('season-modal').classList.add('show');
+        };
+        document.getElementById('cm-btn').textContent = 'Ver logro final 🏆';
+    } else {
+        document.getElementById('cm-btn').onclick = closeComplete;
+        document.getElementById('cm-btn').textContent = 'Ver mi progreso →';
+    }
+
+    document.getElementById('complete-modal').classList.add('show');
+}
+
+function closeComplete() {
+    document.getElementById('complete-modal').classList.remove('show');
+    goTo('screen-progress');
+}
+
+function closeSeasonModal() {
+    document.getElementById('season-modal').classList.remove('show');
+    goTo('screen-progress');
+}
+
+// ════════════════════════════════════════════════
+//  TUTOR
+// ════════════════════════════════════════════════
+function renderTutor() {
+    const body = document.getElementById('tutor-body');
+    const lastDay = S.completedDays.length > 0 ? Math.max(...S.completedDays) : null;
+
+    if (!lastDay) {
+        body.innerHTML = `
+        <div class="lia-message">
+            <p>¡Hola! Soy Lia, tu tutora personal. Aún no has completado ninguna misión. ¡Empieza la primera misión y regresa aquí para recibir mi retroalimentación!</p>
+        </div>
+        <div class="no-mission-yet">
+            <p>🎯 Completa tu primera misión para recibir feedback personalizado de Lia.</p>
+        </div>
+        <div class="chat-section-title" style="margin:16px 0 8px;">💬 Hablar con Lia en tiempo real</div>
+        <div id="chat-container"></div>`;
+        renderChatUI();
+        return;
+    }
+
+    const m = MISSIONS[lastDay - 1];
+    let errorsHtml = '';
+    if (m.liaErrors.length > 0) {
+        errorsHtml = `
+        <div class="analysis-card">
+            <h3>🔍 Lo que noté hoy</h3>
+            ${m.liaErrors.map(e => `
+                <div class="error-item error-wrong">
+                    <div class="error-label">❌ Dijiste</div>
+                    <div class="error-phrase">${e.wrong}</div>
+                </div>
+                <div class="error-item error-correct">
+                    <div class="error-label">✅ Mejor así</div>
+                    <div class="error-phrase">${e.correct}</div>
+                </div>
+                <div style="height:8px;"></div>`).join('')}
+        </div>`;
+    }
+
+    const practiceHtml = `
+    <div class="analysis-card">
+        <h3>📝 Practica estas frases hoy</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+            ${m.liaPractice.map(ph => `
+            <div class="practice-pill">
+                <h5>${ph}</h5>
+                <p>Di esta frase en voz alta varias veces</p>
+            </div>`).join('')}
+        </div>
+    </div>`;
+
+    body.innerHTML = `
+    <div class="lia-message"><p>${m.liaMessage}</p></div>
+    ${errorsHtml}
+    <div class="recommendation-card">
+        <h3>⚡ ${lastDay === 7 ? '¡Felicidades!' : 'Tu misión de mañana'}</h3>
+        <p>${m.liaRec}</p>
+    </div>
+    ${practiceHtml}
+    <div class="chat-section-title" style="margin:16px 0 8px;">💬 Hablar con Lia en tiempo real</div>
+    <div id="chat-container"></div>`;
+
+    renderChatUI();
+}
+
+// ════════════════════════════════════════════════
+//  PROGRESS
+// ════════════════════════════════════════════════
+function renderProgress() {
+    const n    = S.completedDays.length;
+    const pct  = getConfidence();
+    const phrases = n * 4;
+
+    const unlocked = MISSIONS.filter(m => S.completedDays.includes(m.day));
+    const locked   = MISSIONS.filter(m => !S.completedDays.includes(m.day));
+
+    const unlockedHtml = unlocked.length > 0
+        ? unlocked.map(m => `
+        <div class="skill-card unlocked" onclick="openAndGoMission(${m.day})">
+            <div class="skill-icon">${m.skillIcon}</div>
+            <div class="skill-content">
+                <h4>Puedes: ${m.skill}</h4>
+                <p>Completado · Día ${m.day}</p>
+            </div>
+            <div class="skill-badge">⭐</div>
+        </div>`).join('')
+        : '<p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Completa tu primera misión para desbloquear habilidades.</p>';
+
+    const lockedHtml = locked.map(m => `
+        <div class="skill-card locked">
+            <div class="skill-icon">${m.skillIcon}</div>
+            <div class="skill-content">
+                <h4>Puedes: ${m.skill}</h4>
+                <p>Disponible en Día ${m.day}</p>
+            </div>
+            <div class="skill-badge">🔒</div>
+        </div>`).join('');
+
+    document.getElementById('progress-body').innerHTML = `
+    <div class="pstats">
+        <div class="pstat">
+            <span class="pstat-val">🔥 ${S.streak}</span>
+            <div class="pstat-lbl">días de racha</div>
+        </div>
+        <div class="pstat">
+            <span class="pstat-val">${n}</span>
+            <div class="pstat-lbl">${n === 1 ? 'misión hecha' : 'misiones hechas'}</div>
+        </div>
+        <div class="pstat">
+            <span class="pstat-val">${phrases}</span>
+            <div class="pstat-lbl">frases aprendidas</div>
+        </div>
+    </div>
+    <div class="skills-section">
+        <h3>✅ Habilidades desbloqueadas</h3>
+        ${unlockedHtml}
+        ${locked.length > 0 ? `<h3 style="margin-top:6px;">🔒 Próximas habilidades</h3>${lockedHtml}` : ''}
+    </div>
+    <button class="reset-btn" onclick="resetState()">↺ Reiniciar progreso (demo)</button>`;
+}
+
+// ════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════
+function renderAll() {
+    renderHome();
+    renderMap();
+    renderTutor();
+    renderProgress();
+    const next = getNextDay();
+    if (next) openMission(next);
+}
+
+// ════════════════════════════════════════════════
+//  GEMINI CHAT
+// ════════════════════════════════════════════════
+let geminiApiKey = localStorage.getItem('lem-gemini-key') || '';
+let chatHistory  = [];
+
+const SUGGESTIONS = [
+    '¿Cómo pronuncio "Can you help me"?',
+    'Dame una frase para practicar hoy',
+    'Corrige esto: I no understand',
+    '¿Cómo pido la cuenta en un restaurante?',
+    'Tengo miedo de hablar inglés, ¿qué hago?',
+];
+
+function buildSystemPrompt() {
+    const done = S.completedDays.length;
+    const pct  = getConfidence();
+    const skills = MISSIONS.filter(m => S.completedDays.includes(m.day)).map(m => m.skill).join(', ') || 'ninguna todavía';
+    return `Eres Lia, una tutora de inglés cálida, motivadora y profesional para adultos hispanohablantes que son principiantes aprendiendo inglés con una app llamada "Live English Missions".
+
+PERSONALIDAD:
+- Muy alentadora, nunca juzgas los errores
+- Respuestas cortas y directas (máximo 3-4 oraciones)
+- Celebras el progreso con entusiasmo genuino
+- Tono como coach personal, no como maestra de escuela
+
+IDIOMA:
+- Responde SIEMPRE en español, a menos que el usuario pida practicar en inglés
+- Si el usuario escribe en inglés, corrige errores gentilmente y elogia su esfuerzo
+- Si corriges un error: primero valida, muestra la forma correcta, explica brevemente por qué
+
+CONTEXTO DEL USUARIO:
+- Misiones completadas: ${done} de 7
+- Nivel de confianza: ${pct}%
+- Habilidades desbloqueadas: ${skills}
+- La app se enfoca en inglés para viajes reales: aeropuerto, taxi, hotel, restaurante, problemas
+
+REGLAS:
+- Nunca inventes frases incorrectas como ejemplos sin corregirlas
+- Si el usuario pregunta algo fuera del inglés, redirige amablemente al aprendizaje
+- Termina siempre con una micro-acción o frase de práctica cuando sea relevante`;
+}
+
+function renderChatUI() {
+    const container = document.getElementById('chat-container');
+    if (!container) return;
+
+    if (!geminiApiKey) {
+        container.innerHTML = `
+        <div class="api-setup-card">
+            <h4>🤖 Chat con IA activado con Gemini</h4>
+            <p>Activa el chat para que Lia te responda en tiempo real, corrija tus errores y te ayude a practicar inglés.</p>
+            <button class="btn-setup-api" onclick="openApiModal()">Configurar clave de Gemini (gratis)</button>
+        </div>`;
+        return;
+    }
+
+    const suggestionsHtml = SUGGESTIONS.map((s, i) =>
+        `<div class="suggestion-chip" onclick="sendSuggestionIdx(${i})">${escHtml(s)}</div>`
+    ).join('');
+
+    container.innerHTML = `
+    <div class="chat-box">
+        <div class="chat-messages" id="chat-messages">
+            <div class="chat-bubble bubble-lia">
+                <div class="bubble-name">Lia</div>
+                ¡Hola! Soy Lia, tu tutora personal. Puedo ayudarte a practicar inglés, corregir frases y responder tus dudas. ¿Por dónde empezamos?
+            </div>
+        </div>
+        <div class="chat-suggestions" id="chat-suggestions">${suggestionsHtml}</div>
+        <div class="chat-input-row">
+            <input class="chat-input" id="chat-input" type="text" placeholder="Escríbele a Lia..." maxlength="300"
+                onkeydown="if(event.key==='Enter')sendChat()" />
+            <button class="chat-send-btn" onclick="sendChat()">➤</button>
+        </div>
+        <div class="chat-api-badge">
+            <span>⚡ Powered by Gemini</span>
+            <button class="btn-change-key" onclick="openApiModal()">Cambiar clave</button>
+        </div>
+    </div>`;
+}
+
+function sendSuggestionIdx(i) {
+    sendSuggestion(SUGGESTIONS[i]);
+}
+
+function sendSuggestion(text) {
+    const input = document.getElementById('chat-input');
+    if (input) { input.value = text; sendChat(); }
+    const chips = document.getElementById('chat-suggestions');
+    if (chips) chips.innerHTML = '';
+}
+
+async function sendChat() {
+    const input = document.getElementById('chat-input');
+    const text  = (input?.value || '').trim();
+    if (!text || !geminiApiKey) return;
+    input.value = '';
+
+    appendBubble('user', text);
+    const typingId = appendTyping();
+
+    chatHistory.push({ role:'user', parts:[{ text }] });
+
+    try {
+        const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    system_instruction: { parts:[{ text: buildSystemPrompt() }] },
+                    contents: chatHistory,
+                    generationConfig: { maxOutputTokens:300, temperature:0.75 }
+                })
+            }
+        );
+
+        const data = await res.json();
+        removeTyping(typingId);
+
+        if (data.error) {
+            appendBubble('lia', '⚠️ Error: ' + (data.error.message || 'Clave incorrecta. Verifica tu clave de Gemini.'));
+            return;
+        }
+
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No pude responder. Intenta de nuevo.';
+        chatHistory.push({ role:'model', parts:[{ text: reply }] });
+        appendBubble('lia', reply);
+
+    } catch(e) {
+        removeTyping(typingId);
+        appendBubble('lia', '⚠️ Error de conexión. Verifica tu internet e inténtalo de nuevo.');
+    }
+}
+
+function appendBubble(who, text) {
+    const box = document.getElementById('chat-messages');
+    if (!box) return;
+    const div = document.createElement('div');
+    if (who === 'lia') {
+        div.className = 'chat-bubble bubble-lia';
+        div.innerHTML = `<div class="bubble-name">Lia</div>${escHtml(text)}`;
+    } else {
+        div.className = 'chat-bubble bubble-user';
+        div.textContent = text;
+    }
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+    return div;
+}
+
+function appendTyping() {
+    const box = document.getElementById('chat-messages');
+    if (!box) return null;
+    const id = 'typing-' + Date.now();
+    const div = document.createElement('div');
+    div.id = id;
+    div.className = 'chat-bubble bubble-lia';
+    div.innerHTML = `<div class="bubble-name">Lia</div><div class="bubble-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+    return id;
+}
+
+function removeTyping(id) {
+    if (id) document.getElementById(id)?.remove();
+}
+
+function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+// ── API Key modal ──
+function openApiModal() {
+    document.getElementById('api-key-input').value = geminiApiKey;
+    document.getElementById('api-modal').classList.add('show');
+}
+
+function closeApiModal() {
+    document.getElementById('api-modal').classList.remove('show');
+}
+
+function saveApiKey() {
+    const val = document.getElementById('api-key-input').value.trim();
+    if (!val) { alert('Por favor ingresa una clave válida.'); return; }
+    geminiApiKey = val;
+    localStorage.setItem('lem-gemini-key', val);
+    chatHistory = [];
+    closeApiModal();
+    renderChatUI();
+}
+
+// ════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════
+loadState();
+renderAll();
+</script>
+</body>
+</html>
