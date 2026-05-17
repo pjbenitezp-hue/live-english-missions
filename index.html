@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Live English Missions</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -248,6 +249,23 @@
         .btn-continue { background:linear-gradient(135deg,var(--accent),#FF9A4A); color:white; border:none; border-radius:14px; padding:16px; font-size:15px; font-weight:700; cursor:pointer; width:100%; box-shadow:0 4px 18px rgba(255,107,53,.4); transition:transform .15s; }
         .btn-continue:active { transform:scale(.97); }
 
+        /* ── AUTH MODAL ── */
+        .auth-modal-card { background:var(--card); border-radius:24px 24px 0 0; padding:32px 24px 40px; width:100%; max-width:430px; animation:slideUp .28s ease; }
+        .auth-modal-card h2 { font-size:22px; font-weight:900; color:var(--text); margin-bottom:6px; }
+        .auth-modal-card p { font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.5; }
+        .auth-input { width:100%; padding:14px 16px; border:1.5px solid var(--border); border-radius:12px; font-size:14px; font-family:inherit; color:var(--text); background:var(--bg); outline:none; transition:border-color .2s; }
+        .auth-input:focus { border-color:var(--primary-light); }
+        .auth-error { color:#e53e3e; font-size:12px; margin-top:6px; display:none; }
+        .btn-auth { background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:white; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:700; cursor:pointer; width:100%; margin-top:14px; transition:transform .15s; }
+        .btn-auth:active { transform:scale(.97); }
+        .auth-toggle { text-align:center; margin-top:14px; font-size:13px; color:var(--text-muted); }
+        .auth-toggle button { background:none; border:none; color:var(--accent); font-weight:700; font-size:13px; cursor:pointer; padding:0 4px; }
+        .auth-skip { background:none; border:none; color:var(--text-muted); font-size:12px; width:100%; margin-top:10px; cursor:pointer; text-decoration:underline; }
+        .auth-user-banner { background:rgba(0,200,150,.1); border:1px solid rgba(0,200,150,.25); border-radius:12px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; margin:0 16px 12px; }
+        .auth-user-info { font-size:12px; color:var(--text); font-weight:600; }
+        .auth-user-info span { display:block; font-size:11px; color:var(--text-muted); font-weight:400; margin-top:1px; }
+        .btn-signout { background:none; border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:12px; color:var(--text-muted); cursor:pointer; }
+
         /* Season complete modal */
         .season-modal-sheet { background:linear-gradient(160deg,#1E3A6E,#2D5AA0); border-radius:24px 24px 0 0; padding:40px 24px 48px; width:100%; max-width:430px; text-align:center; animation:slideUp .28s ease; color:white; }
         .season-modal-sheet h2 { font-size:24px; font-weight:900; margin-bottom:10px; }
@@ -348,7 +366,7 @@
                         <div class="app-logo-title">Live <span>English</span><br>Missions</div>
                         <div class="app-logo-sub">Tu aventura empieza hoy ✈️</div>
                     </div>
-                    <div class="user-avatar">👤</div>
+                    <div class="user-avatar" id="user-avatar" onclick="openAuthModal()">👤</div>
                 </div>
                 <div class="stats-row">
                     <div class="stat-card">
@@ -585,6 +603,25 @@
 </div>
 
 <!-- Season Complete Modal -->
+<!-- Auth Modal -->
+<div class="modal-overlay" id="auth-modal">
+    <div class="auth-modal-card">
+        <h2 id="auth-title">Crea tu cuenta</h2>
+        <p id="auth-subtitle">Guarda tu progreso en la nube y accede desde cualquier dispositivo.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+            <input type="email" id="auth-email" class="auth-input" placeholder="tu@email.com" />
+            <input type="password" id="auth-password" class="auth-input" placeholder="Contraseña (mínimo 6 caracteres)" />
+        </div>
+        <div class="auth-error" id="auth-error"></div>
+        <button class="btn-auth" id="auth-submit-btn" onclick="authSubmit()">Crear cuenta</button>
+        <div class="auth-toggle">
+            <span id="auth-toggle-text">¿Ya tienes cuenta?</span>
+            <button onclick="toggleAuthMode()" id="auth-toggle-btn">Iniciar sesión</button>
+        </div>
+        <button class="auth-skip" onclick="closeAuthModal()">Continuar sin cuenta (solo este dispositivo)</button>
+    </div>
+</div>
+
 <div class="modal-overlay" id="season-modal">
     <div class="season-modal-sheet">
         <div style="font-size:72px;margin-bottom:16px;">🏆</div>
@@ -941,6 +978,7 @@ function loadState() {
 
 function saveState() {
     localStorage.setItem('lem-v1', JSON.stringify(S));
+    saveStateToCloud();
 }
 
 function resetState() {
@@ -1881,8 +1919,164 @@ function saveApiKey() {
 // ════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  SUPABASE — auth + cloud sync
+// ════════════════════════════════════════════════
+const SB_URL = 'https://sqpvgfbpvdwawbpgwfjc.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxcHZnZmJwdmR3YXdicGd3ZmpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NjI0MjYsImV4cCI6MjA5NDUzODQyNn0.chfOly_9qlgjXTaxkk12l0M1WIRYrw15OZLp4_kwpV4';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+let currentUser = null;
+let authMode = 'signup'; // 'signup' | 'login'
+
+async function initAuth() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+        currentUser = session.user;
+        await loadStateFromCloud();
+    }
+    sb.auth.onAuthStateChange(async (event, session) => {
+        currentUser = session?.user || null;
+        if (event === 'SIGNED_IN') {
+            await loadStateFromCloud();
+            renderAll();
+            closeAuthModal();
+        }
+        if (event === 'SIGNED_OUT') {
+            S = { completedDays:[], completedDays2:[], streak:0, lastDate:null };
+            saveState();
+            renderAll();
+        }
+        updateAuthUI();
+    });
+    updateAuthUI();
+}
+
+async function loadStateFromCloud() {
+    if (!currentUser) return;
+    const { data } = await sb.from('progress').select('*').eq('user_id', currentUser.id).single();
+    if (data) {
+        S = {
+            completedDays:  data.completed_days  || [],
+            completedDays2: data.completed_days2 || [],
+            streak:         data.streak          || 0,
+            lastDate:       data.last_date       || null
+        };
+        localStorage.setItem('lem-v1', JSON.stringify(S));
+    }
+}
+
+async function saveStateToCloud() {
+    if (!currentUser) return;
+    await sb.from('progress').upsert({
+        user_id:         currentUser.id,
+        completed_days:  S.completedDays,
+        completed_days2: S.completedDays2,
+        streak:          S.streak,
+        last_date:       S.lastDate,
+        updated_at:      new Date().toISOString()
+    }, { onConflict: 'user_id' });
+}
+
+function updateAuthUI() {
+    const avatar = document.getElementById('user-avatar');
+    if (!avatar) return;
+    if (currentUser) {
+        const initial = (currentUser.email || '?')[0].toUpperCase();
+        avatar.textContent = initial;
+        avatar.style.background = 'linear-gradient(135deg,var(--success),#00E5AE)';
+        avatar.title = currentUser.email;
+    } else {
+        avatar.textContent = '👤';
+        avatar.style.background = '';
+        avatar.title = 'Crear cuenta / Iniciar sesión';
+    }
+}
+
+function openAuthModal() {
+    if (currentUser) {
+        if (confirm(`Sesión activa: ${currentUser.email}\n\n¿Cerrar sesión?`)) {
+            sb.auth.signOut();
+        }
+        return;
+    }
+    authMode = 'signup';
+    setAuthMode('signup');
+    document.getElementById('auth-error').style.display = 'none';
+    document.getElementById('auth-email').value = '';
+    document.getElementById('auth-password').value = '';
+    document.getElementById('auth-modal').classList.add('show');
+}
+
+function closeAuthModal() {
+    document.getElementById('auth-modal').classList.remove('show');
+}
+
+function toggleAuthMode() {
+    authMode = authMode === 'signup' ? 'login' : 'signup';
+    setAuthMode(authMode);
+}
+
+function setAuthMode(mode) {
+    const isSignup = mode === 'signup';
+    document.getElementById('auth-title').textContent        = isSignup ? 'Crea tu cuenta' : 'Iniciar sesión';
+    document.getElementById('auth-subtitle').textContent     = isSignup ? 'Guarda tu progreso en la nube y accede desde cualquier dispositivo.' : 'Bienvenido de vuelta. Tu progreso se sincronizará.';
+    document.getElementById('auth-submit-btn').textContent   = isSignup ? 'Crear cuenta' : 'Iniciar sesión';
+    document.getElementById('auth-toggle-text').textContent  = isSignup ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?';
+    document.getElementById('auth-toggle-btn').textContent   = isSignup ? 'Iniciar sesión' : 'Crear cuenta';
+}
+
+async function authSubmit() {
+    const email    = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const errEl    = document.getElementById('auth-error');
+    const btn      = document.getElementById('auth-submit-btn');
+
+    if (!email || !password) { showAuthError('Por favor completa todos los campos.'); return; }
+    if (password.length < 6)  { showAuthError('La contraseña debe tener al menos 6 caracteres.'); return; }
+
+    btn.textContent = '...';
+    btn.disabled = true;
+    errEl.style.display = 'none';
+
+    const fn = authMode === 'signup'
+        ? sb.auth.signUp({ email, password })
+        : sb.auth.signInWithPassword({ email, password });
+
+    const { error } = await fn;
+    btn.disabled = false;
+    setAuthMode(authMode);
+
+    if (error) {
+        const msg = error.message.includes('already registered')
+            ? 'Este email ya tiene cuenta. Inicia sesión.'
+            : error.message.includes('Invalid login')
+            ? 'Email o contraseña incorrectos.'
+            : error.message.includes('Email not confirmed')
+            ? 'Confirma tu email primero. Revisa tu bandeja de entrada.'
+            : 'Error: ' + error.message;
+        showAuthError(msg);
+        return;
+    }
+
+    if (authMode === 'signup') {
+        showAuthError('✅ Revisa tu email para confirmar tu cuenta y luego inicia sesión.');
+        document.getElementById('auth-error').style.color = 'var(--success)';
+    }
+}
+
+function showAuthError(msg) {
+    const el = document.getElementById('auth-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+    el.style.color = '#e53e3e';
+}
+
+// ════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════
 loadState();
 renderAll();
+initAuth();
 </script>
 </body>
 </html>
