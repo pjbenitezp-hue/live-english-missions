@@ -249,6 +249,43 @@
         .btn-continue { background:linear-gradient(135deg,var(--accent),#FF9A4A); color:white; border:none; border-radius:14px; padding:16px; font-size:15px; font-weight:700; cursor:pointer; width:100%; box-shadow:0 4px 18px rgba(255,107,53,.4); transition:transform .15s; }
         .btn-continue:active { transform:scale(.97); }
 
+        /* ── BOTÓN LENTO EN FRASES ── */
+        .phrase-actions { display:flex; gap:6px; align-items:center; }
+        .btn-slow { background:rgba(30,58,110,.08); border:1px solid var(--border); border-radius:8px; padding:5px 9px; font-size:11px; font-weight:600; color:var(--primary); cursor:pointer; white-space:nowrap; }
+        .btn-slow:active { background:rgba(30,58,110,.16); }
+
+        /* ── COMPARACIÓN DE VOZ ── */
+        .voice-comparison { background:rgba(255,255,255,.08); border-radius:14px; padding:14px 16px; margin:12px 0; border:1px solid rgba(255,255,255,.12); }
+        .comp-row { margin-bottom:8px; }
+        .comp-row:last-child { margin-bottom:0; }
+        .comp-label { font-size:10px; font-weight:700; opacity:.6; text-transform:uppercase; letter-spacing:.8px; margin-bottom:4px; }
+        .comp-value { font-size:14px; font-weight:600; line-height:1.5; }
+        .word-ok   { color:#5eff9e; }
+        .word-miss { color:#ff7070; text-decoration:underline dotted; }
+        .word-extra { color:rgba(255,255,255,.5); font-style:italic; }
+
+        /* ── SECCIÓN LO QUE APRENDISTE ── */
+        .learned-card { background:var(--card); border-radius:16px; padding:0; box-shadow:0 2px 14px rgba(0,0,0,.06); overflow:hidden; margin-top:4px; }
+        .learned-header { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; cursor:pointer; user-select:none; }
+        .learned-header h3 { font-size:14px; font-weight:700; color:var(--text); }
+        .learned-toggle { font-size:12px; color:var(--text-muted); transition:transform .2s; }
+        .learned-toggle.open { transform:rotate(180deg); }
+        .learned-body { padding:0 16px 16px; display:none; }
+        .learned-body.open { display:block; }
+        .learned-section { margin-bottom:12px; }
+        .learned-section:last-child { margin-bottom:0; }
+        .learned-section-title { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.8px; margin-bottom:6px; }
+        .grammar-rule-box { background:linear-gradient(135deg,rgba(30,58,110,.06),rgba(45,90,160,.08)); border-radius:10px; padding:10px 12px; border-left:3px solid var(--primary-light); }
+        .grammar-rule-title { font-size:13px; font-weight:700; color:var(--primary); margin-bottom:4px; }
+        .grammar-rule-text { font-size:12px; color:var(--text-muted); font-weight:600; }
+        .grammar-example { font-size:12px; color:var(--text); margin-top:4px; font-style:italic; }
+        .vocab-grid { display:flex; flex-wrap:wrap; gap:6px; }
+        .vocab-pill { background:rgba(0,200,150,.08); border:1px solid rgba(0,200,150,.2); border-radius:8px; padding:5px 10px; font-size:12px; }
+        .vocab-en { font-weight:700; color:var(--success); }
+        .vocab-es { color:var(--text-muted); }
+        .pronoun-box { background:rgba(255,184,0,.08); border:1px solid rgba(255,184,0,.2); border-radius:10px; padding:8px 12px; font-size:12px; font-weight:600; color:var(--text); }
+        .tip-box { background:rgba(255,107,53,.06); border:1px solid rgba(255,107,53,.15); border-radius:10px; padding:10px 12px; font-size:12px; color:var(--text); line-height:1.55; }
+
         /* ── AUTH MODAL ── */
         .auth-modal-card { background:var(--card); border-radius:24px 24px 0 0; padding:32px 24px 40px; width:100%; max-width:430px; animation:slideUp .28s ease; }
         .auth-modal-card h2 { font-size:22px; font-weight:900; color:var(--text); margin-bottom:6px; }
@@ -505,6 +542,7 @@
                         <p id="lia-tip">Toca cada frase para escucharla y practicarla.</p>
                     </div>
                 </div>
+                <div id="m-learned"></div>
                 <div id="m-complete-area"></div>
             </div>
         </div>
@@ -568,16 +606,23 @@
         <div class="voice-day-label" id="v-label">Día 1 · Frase 1 de 4</div>
         <h3>Di esta frase en voz alta</h3>
         <div class="voice-phrase" id="voice-phrase-text"></div>
-        <div class="voice-transcript-box" id="v-transcript-box">
-            <div class="transcript-label">Lo que escuché:</div>
-            <div class="transcript-text" id="v-transcript"></div>
+        <div class="voice-comparison" id="v-comparison" style="display:none">
+            <div class="comp-row">
+                <div class="comp-label">🎤 Lo que dijiste</div>
+                <div class="comp-value" id="v-you-said"></div>
+            </div>
+            <div class="comp-row">
+                <div class="comp-label">✅ Palabras correctas / faltantes</div>
+                <div class="comp-value" id="v-word-check"></div>
+            </div>
         </div>
         <div class="voice-feedback" id="v-feedback"></div>
         <div class="voice-controls">
-            <button class="btn-listen-voice" onclick="speakVoicePhrase()">🔊 Escuchar</button>
+            <button class="btn-listen-voice" onclick="speakVoicePhrase()">🔊 Normal</button>
+            <button class="btn-listen-voice" onclick="speakVoicePhraseSlow()" style="background:rgba(255,255,255,.15);">🐢 Lento</button>
             <button class="mic-btn" id="mic-btn" onclick="toggleRecognition()">🎤</button>
         </div>
-        <div class="voice-hint" id="v-hint">Toca 🔊 para escuchar la frase, luego 🎤 para repetirla</div>
+        <div class="voice-hint" id="v-hint">Toca 🔊 Normal para escuchar · 🐢 Lento para practicar · 🎤 para hablar</div>
         <div class="voice-nav-btns">
             <button class="btn-voice-next" onclick="voiceNext()" id="v-next-btn">Siguiente →</button>
             <button class="btn-close-voice" onclick="closeVoice()">✓ Terminar</button>
@@ -946,6 +991,100 @@ const MISSIONS_S2 = [
   },
 ];
 
+// ════════════════════════════════════════════════
+//  CONTENIDO DE APRENDIZAJE POR MISIÓN
+// ════════════════════════════════════════════════
+const LEARNED = {
+  s1: {
+    1: {
+      grammar: { title:'Verbo "to be" — Ser / Estar', rule:'I AM · You ARE · He/She/It IS', example:'"I am Carlos." = Yo soy Carlos.' },
+      vocab: [{en:'name',es:'nombre'},{en:'from',es:'de / desde'},{en:'speak',es:'hablar'},{en:'help',es:'ayudar'},{en:'please',es:'por favor'}],
+      pronoun: 'I (yo) — en inglés siempre en MAYÚSCULA',
+      tip:'El sujeto NUNCA se omite en inglés. No se dice "Am Carlos", se dice "I am Carlos".'
+    },
+    2: {
+      grammar: { title:'Modal "Can" — Pedir con educación', rule:'Can + verbo base (sin "to")', example:'"Can you help me?" = ¿Puedes ayudarme?' },
+      vocab: [{en:'understand',es:'entender'},{en:'repeat',es:'repetir'},{en:'slowly',es:'despacio'},{en:'please',es:'por favor'},{en:'help',es:'ayuda'}],
+      pronoun: 'You (tú/usted) — se usa para hablarle a alguien',
+      tip:'"Can you...?" es la forma más natural de pedir algo. Más cortés que solo decir el verbo.'
+    },
+    3: {
+      grammar: { title:'"Need" — Expresar necesidad', rule:'I need + sustantivo · I need to + verbo', example:'"I need a taxi." / "I need to go."' },
+      vocab: [{en:'need',es:'necesitar'},{en:'taxi',es:'taxi'},{en:'address',es:'dirección'},{en:'take',es:'llevar'},{en:'how much',es:'cuánto cuesta'}],
+      pronoun: 'I (yo), me (a mí) — "Can you take ME?"',
+      tip:'"How much is it?" — nunca "How much cost?" El verbo correcto es "is", no "cost".'
+    },
+    4: {
+      grammar: { title:'Artículo "A/An" — Nunca se omite', rule:'I have A reservation · Here IS my passport', example:'"I have a reservation." ✅  "I have reservation." ❌' },
+      vocab: [{en:'reservation',es:'reservación'},{en:'check in',es:'registrarse'},{en:'passport',es:'pasaporte'},{en:'room',es:'habitación'},{en:'here',es:'aquí'}],
+      pronoun: 'My (mi/mis) — posesivo de "I": my name, my passport',
+      tip:'El artículo "a" antes de sustantivos es obligatorio en inglés. "I have a problem" no "I have problem".'
+    },
+    5: {
+      grammar: { title:'"Would like" vs "Want" — Niveles de cortesía', rule:'I would like + sustantivo (formal) · Can I have + sustantivo (educado)', example:'"I would like chicken." = Quisiera pollo.' },
+      vocab: [{en:'bill',es:'cuenta (restaurante)'},{en:'coffee',es:'café'},{en:'order',es:'ordenar / pedido'},{en:'ready',es:'listo'},{en:'please',es:'por favor'}],
+      pronoun: 'I (yo) — sujeto principal en estas frases',
+      tip:'"I would like" suena más educado que "I want". En restaurantes y situaciones formales, usa "would like".'
+    },
+    6: {
+      grammar: { title:'"There is" + "Doesn\'t work" — Reportar problemas', rule:'There IS a problem · My ___ DOESN\'T work', example:'"My key doesn\'t work." — 3ra persona singular usa DOESN\'T'  },
+      vocab: [{en:'problem',es:'problema'},{en:'key',es:'llave'},{en:'work',es:'funcionar'},{en:'room',es:'habitación'},{en:'there is',es:'hay / existe'}],
+      pronoun: 'My (mi) — posesivo, There (ahí/hay) — sujeto impersonal',
+      tip:'"Doesn\'t" = does not. Se usa con él/ella/eso (3ra persona). "I don\'t" vs "It doesn\'t".'
+    },
+    7: {
+      grammar: { title:'Repaso completo — Temporada 1', rule:'To be · Can · Need · Have · Would like · There is', example:'"I need a taxi. I have a reservation. There is a problem."' },
+      vocab: [{en:'introduce',es:'presentar'},{en:'reservation',es:'reservación'},{en:'problem',es:'problema'},{en:'help',es:'ayuda'},{en:'taxi',es:'taxi'}],
+      pronoun: 'I · My · You · There — todos los aprendidos',
+      tip:'Combinar frases cortas es más efectivo que frases largas. Habla simple y claro.'
+    },
+  },
+  s2: {
+    1: {
+      grammar: { title:'Contracción "I\'m" — Muy común en inglés hablado', rule:'I AM = I\'M · I am ready = I\'m ready', example:'"I\'m Carlos, the new employee." — Más natural que "I am Carlos".' },
+      vocab: [{en:'employee',es:'empleado'},{en:'new',es:'nuevo'},{en:'ready',es:'listo'},{en:'start',es:'empezar'},{en:'where',es:'dónde'}],
+      pronoun: 'I / I\'m (yo) — forma contraída, más natural en conversación',
+      tip:'Las contracciones (I\'m, you\'re, it\'s) suenan más naturales. El inglés formal las evita; el hablado las usa siempre.'
+    },
+    2: {
+      grammar: { title:'"Just" + pasado — Acción muy reciente', rule:'I just + verbo en pasado simple', example:'"I just started today." = Acabo de empezar hoy.' },
+      vocab: [{en:'just',es:'acabo de / recién'},{en:'show around',es:'dar un recorrido'},{en:'role',es:'cargo / rol'},{en:'team',es:'equipo'},{en:'colleague',es:'colega'}],
+      pronoun: 'I (yo), me (a mí) — "Can you show ME around?"',
+      tip:'"Just" indica que algo pasó muy recientemente. "I just started" suena más natural que "I started today".'
+    },
+    3: {
+      grammar: { title:'"Going well" + "I agree with" — Frases de reunión', rule:'The project IS going well · I agree WITH that', example:'"I agree with that." — Siempre lleva "with" después de agree.' },
+      vocab: [{en:'project',es:'proyecto'},{en:'question',es:'pregunta'},{en:'agree',es:'estar de acuerdo'},{en:'update',es:'actualización'},{en:'meeting',es:'reunión'}],
+      pronoun: 'I (yo), that (eso) — "I agree with THAT"',
+      tip:'"I agree" siempre lleva "with": "I agree with you" / "I agree with that". Sin "with" suena incompleto.'
+    },
+    4: {
+      grammar: { title:'"Don\'t know how to" — Expresar desconocimiento', rule:'I don\'t know how to + verbo base', example:'"I don\'t know how to do this." — Nunca "I no know".' },
+      vocab: [{en:'know',es:'saber'},{en:'show',es:'mostrar'},{en:'understand',es:'entender'},{en:'help',es:'ayuda'},{en:'how to',es:'cómo hacer'}],
+      pronoun: 'I (yo), me (a mí) — "Can you show ME how?"',
+      tip:'"I don\'t" (no sé/no hago) — "DON\'T" es la negación de I/You/We/They. Nunca digas "I no know".'
+    },
+    5: {
+      grammar: { title:'Futuro con "Will" — Compromisos y promesas', rule:'I WILL + verbo base (sin "to")', example:'"I will send it today." = Lo enviaré hoy.' },
+      vocab: [{en:'send',es:'enviar'},{en:'report',es:'informe'},{en:'regards',es:'saludos'},{en:'available',es:'disponible'},{en:'let know',es:'avisar'}],
+      pronoun: 'I (yo), you (tú) — "I will send · Please let ME know"',
+      tip:'"I will" expresa una promesa o compromiso. En emails, "Best regards" siempre en plural — no "Best regard".'
+    },
+    6: {
+      grammar: { title:'"Can we" + "I\'m available" — Coordinar', rule:'Can WE + verbo? · I\'m available + tiempo', example:'"Can we schedule a meeting?" / "I\'m available tomorrow at 10."' },
+      vocab: [{en:'schedule',es:'programar / agendar'},{en:'meeting',es:'reunión'},{en:'concern',es:'preocupación'},{en:'available',es:'disponible'},{en:'free',es:'libre'}],
+      pronoun: 'We (nosotros) — "Can WE schedule?" · I (yo)',
+      tip:'"I\'m available" suena más profesional que "I am free". En contextos laborales usa "available".'
+    },
+    7: {
+      grammar: { title:'Repaso completo — Temporada 2', rule:'I\'m · Just · Will · Don\'t know how to · I agree with · Can we', example:'"I\'m available. I will send the report. I have a question."' },
+      vocab: [{en:'enjoying',es:'disfrutando'},{en:'available',es:'disponible'},{en:'whenever',es:'cuando sea'},{en:'concern',es:'preocupación'},{en:'report',es:'informe'}],
+      pronoun: 'I / We / You / Me — todos los laborales',
+      tip:'El inglés de trabajo prioriza claridad y cortesía. Frases cortas + "please" = comunicación profesional perfecta.'
+    },
+  }
+};
+
 const SEASONS = [
   { id:1, title:'Primer viaje en inglés',   icon:'✈️', missions: MISSIONS   },
   { id:2, title:'En la oficina en inglés',  icon:'💼', missions: MISSIONS_S2 },
@@ -1215,18 +1354,60 @@ function openMission(season, day) {
     // Phrases
     const pEl = document.getElementById('m-phrases');
     pEl.innerHTML = m.phrases.map((ph, i) => `
-        <div class="phrase-card" id="pc${i+1}" onclick="practicePhrase(${i+1})">
-            <div>
+        <div class="phrase-card" id="pc${i+1}">
+            <div onclick="practicePhrase(${i+1})" style="flex:1;cursor:pointer;">
                 <div class="phrase-en">${ph.en}</div>
                 <div class="phrase-es">${ph.es}</div>
             </div>
-            <div class="phrase-btn" id="pb${i+1}">🔊</div>
+            <div class="phrase-actions">
+                <button class="btn-slow" onclick="speakSlow(${i+1})" title="Escuchar lento">🐢</button>
+                <div class="phrase-btn" id="pb${i+1}" onclick="practicePhrase(${i+1})">🔊</div>
+            </div>
         </div>`).join('');
 
     // Lia tip
     document.getElementById('lia-tip').innerHTML = isDone
         ? '¡Ya completaste esta misión! Puedes repasar las frases cuando quieras.'
         : 'Toca cada frase para escucharla y practicarla. Cuando estés listo, presiona <strong>Simular voz</strong>.';
+
+    // Learned section
+    const learnedKey = currentMissionSeason === 2 ? 's2' : 's1';
+    const ldata = LEARNED[learnedKey]?.[day];
+    const learnedEl = document.getElementById('m-learned');
+    if (ldata && learnedEl) {
+        const vocabHtml = ldata.vocab.map(v =>
+            `<div class="vocab-pill"><span class="vocab-en">${v.en}</span> <span class="vocab-es">= ${v.es}</span></div>`
+        ).join('');
+        learnedEl.innerHTML = `
+        <div class="learned-card">
+            <div class="learned-header" onclick="toggleLearned()">
+                <h3>📚 Lo que aprendiste hoy</h3>
+                <span class="learned-toggle" id="learned-toggle">▼</span>
+            </div>
+            <div class="learned-body" id="learned-body">
+                <div class="learned-section">
+                    <div class="learned-section-title">📐 Gramática</div>
+                    <div class="grammar-rule-box">
+                        <div class="grammar-rule-title">${ldata.grammar.title}</div>
+                        <div class="grammar-rule-text">${ldata.grammar.rule}</div>
+                        <div class="grammar-example">${ldata.grammar.example}</div>
+                    </div>
+                </div>
+                <div class="learned-section">
+                    <div class="learned-section-title">🔤 Vocabulario nuevo</div>
+                    <div class="vocab-grid">${vocabHtml}</div>
+                </div>
+                <div class="learned-section">
+                    <div class="learned-section-title">👤 Pronombres usados</div>
+                    <div class="pronoun-box">${ldata.pronoun}</div>
+                </div>
+                <div class="learned-section">
+                    <div class="learned-section-title">💡 Tip importante</div>
+                    <div class="tip-box">${ldata.tip}</div>
+                </div>
+            </div>
+        </div>`;
+    }
 
     // Complete area
     const ca = document.getElementById('m-complete-area');
@@ -1314,6 +1495,19 @@ function speak(text, rate = 0.82) {
     speechSynthesis.speak(u);
 }
 
+function speakSlow(n) {
+    const ph = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases[n - 1];
+    speak(ph.en, 0.45);
+}
+
+function toggleLearned() {
+    const body   = document.getElementById('learned-body');
+    const toggle = document.getElementById('learned-toggle');
+    if (!body) return;
+    body.classList.toggle('open');
+    if (toggle) toggle.classList.toggle('open');
+}
+
 function listenAll() {
     if (!('speechSynthesis' in window)) return;
     const phrases = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases;
@@ -1357,11 +1551,12 @@ function renderVoicePhrase() {
 
     document.getElementById('v-label').textContent        = `Día ${currentMissionDay} · Frase ${voicePhraseIdx + 1} de ${total}`;
     document.getElementById('voice-phrase-text').textContent = phrase.en;
-    document.getElementById('v-transcript-box').style.display = 'none';
-    document.getElementById('v-transcript').textContent   = '';
+    document.getElementById('v-comparison').style.display = 'none';
+    document.getElementById('v-you-said').textContent     = '';
+    document.getElementById('v-word-check').innerHTML     = '';
     document.getElementById('v-feedback').style.display   = 'none';
     document.getElementById('v-feedback').textContent     = '';
-    document.getElementById('v-hint').textContent         = 'Toca 🔊 para escuchar, luego 🎤 para repetir';
+    document.getElementById('v-hint').textContent         = 'Toca 🔊 Normal para escuchar · 🐢 Lento para practicar · 🎤 para hablar';
     document.getElementById('v-next-btn').textContent     = voicePhraseIdx < total - 1 ? 'Siguiente →' : 'Finalizar ✓';
 
     resetMicBtn();
@@ -1378,6 +1573,12 @@ function speakVoicePhrase() {
     if (!currentMissionDay) return;
     const phrase = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases[voicePhraseIdx];
     speak(phrase.en, 0.75);
+}
+
+function speakVoicePhraseSlow() {
+    if (!currentMissionDay) return;
+    const phrase = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases[voicePhraseIdx];
+    speak(phrase.en, 0.42);
 }
 
 function toggleRecognition() {
@@ -1445,22 +1646,44 @@ function showVoiceFeedback(transcript) {
     const phrase = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases[voicePhraseIdx].en;
     const score  = voiceScore(transcript, phrase);
     const fb     = document.getElementById('v-feedback');
+
+    // Show word comparison
+    const compBox = document.getElementById('v-comparison');
+    const youSaid = document.getElementById('v-you-said');
+    const wordCheck = document.getElementById('v-word-check');
+    if (compBox && youSaid && wordCheck) {
+        compBox.style.display = 'block';
+        youSaid.textContent = transcript || '(sin audio)';
+
+        const clean = s => s.toLowerCase().replace(/[^a-z\s']/g,'').split(/\s+/).filter(Boolean);
+        const got = clean(transcript);
+        const exp = clean(phrase);
+        wordCheck.innerHTML = exp.map(w =>
+            got.includes(w)
+                ? `<span class="word-ok">${w}</span>`
+                : `<span class="word-miss">${w}</span>`
+        ).join(' ') +
+        got.filter(w => !exp.includes(w)).map(w =>
+            ` <span class="word-extra">[${w}]</span>`
+        ).join('');
+    }
+
     fb.style.display = 'block';
     fb.className = 'voice-feedback';
 
     if (score >= 0.75) {
         fb.classList.add('feedback-good');
-        fb.innerHTML = '✅ ¡Excelente pronunciación!';
+        fb.innerHTML = '✅ ¡Excelente! Todas las palabras correctas.';
         practicePhrase(voicePhraseIdx + 1);
-        document.getElementById('v-hint').textContent = 'Toca "Siguiente" para continuar con la próxima frase.';
+        document.getElementById('v-hint').textContent = 'Toca "Siguiente" para continuar.';
     } else if (score >= 0.45) {
         fb.classList.add('feedback-ok');
-        fb.innerHTML = `⚠️ Casi bien. Intenta: <em>"${phrase}"</em>`;
-        document.getElementById('v-hint').textContent = 'Toca 🎤 para intentar de nuevo.';
+        fb.innerHTML = '⚠️ Casi bien — las palabras en <span style="color:#ff7070">rojo</span> necesitas practicar.';
+        document.getElementById('v-hint').textContent = 'Toca 🐢 Lento para escuchar despacio y 🎤 para intentar de nuevo.';
     } else {
         fb.classList.add('feedback-bad');
-        fb.innerHTML = `🔄 No te entendí bien. La frase es: <em>"${phrase}"</em>`;
-        document.getElementById('v-hint').textContent = 'Toca 🔊 para escuchar y luego 🎤 para repetir.';
+        fb.innerHTML = '🔄 Sigue practicando — toca 🐢 Lento para escuchar despacio.';
+        document.getElementById('v-hint').textContent = 'Toca 🔊 Normal o 🐢 Lento para escuchar, luego 🎤 para repetir.';
     }
 }
 
