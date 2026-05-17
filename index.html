@@ -363,6 +363,12 @@
         .voice-controls { display:flex; align-items:center; justify-content:center; gap:24px; margin:20px 0 6px; }
         .btn-listen-voice { background:rgba(255,255,255,.12); color:white; border:1px solid rgba(255,255,255,.2); border-radius:12px; padding:11px 20px; font-size:13px; font-weight:600; cursor:pointer; transition:background .2s; }
         .btn-listen-voice:hover { background:rgba(255,255,255,.22); }
+        .manual-input-section { margin-top:12px; border-top:1px solid rgba(255,255,255,.1); padding-top:12px; }
+        .manual-input-label { font-size:11px; opacity:.65; margin-bottom:8px; display:block; }
+        .manual-input-row { display:flex; gap:8px; }
+        .manual-input { flex:1; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); border-radius:10px; padding:10px 12px; color:white; font-size:13px; font-family:inherit; outline:none; }
+        .manual-input::placeholder { color:rgba(255,255,255,.45); }
+        .btn-manual-check { background:var(--accent); color:white; border:none; border-radius:10px; padding:10px 14px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; }
         .mic-btn.listening { background:#E53535 !important; animation:none !important; }
         .voice-nav-btns { display:flex; gap:10px; margin-top:16px; }
         .btn-voice-next  { flex:1; background:rgba(255,255,255,.1); color:white; border:1px solid rgba(255,255,255,.15); border-radius:12px; padding:12px; font-size:13px; font-weight:600; cursor:pointer; }
@@ -622,7 +628,15 @@
             <button class="btn-listen-voice" onclick="speakVoicePhraseSlow()" style="background:rgba(255,255,255,.15);">🐢 Lento</button>
             <button class="mic-btn" id="mic-btn" onclick="toggleRecognition()">🎤</button>
         </div>
-        <div class="voice-hint" id="v-hint">Toca 🔊 Normal para escuchar · 🐢 Lento para practicar · 🎤 para hablar</div>
+        <div class="voice-hint" id="v-hint">Toca 🔊 para escuchar · 🐢 para oír lento · 🎤 para grabar tu voz</div>
+        <div class="manual-input-section">
+            <span class="manual-input-label">¿El micrófono no funciona? Escribe la frase como la dirías:</span>
+            <div class="manual-input-row">
+                <input class="manual-input" id="manual-input" type="text" placeholder="Escribe aquí en inglés…"
+                    onkeydown="if(event.key==='Enter')submitManual()" />
+                <button class="btn-manual-check" onclick="submitManual()">Verificar ✓</button>
+            </div>
+        </div>
         <div class="voice-nav-btns">
             <button class="btn-voice-next" onclick="voiceNext()" id="v-next-btn">Siguiente →</button>
             <button class="btn-close-voice" onclick="closeVoice()">✓ Terminar</button>
@@ -1556,6 +1570,8 @@ function renderVoicePhrase() {
     document.getElementById('v-word-check').innerHTML     = '';
     document.getElementById('v-feedback').style.display   = 'none';
     document.getElementById('v-feedback').textContent     = '';
+    const mi = document.getElementById('manual-input');
+    if (mi) mi.value = '';
     document.getElementById('v-hint').textContent         = 'Toca 🔊 Normal para escuchar · 🐢 Lento para practicar · 🎤 para hablar';
     document.getElementById('v-next-btn').textContent     = voicePhraseIdx < total - 1 ? 'Siguiente →' : 'Finalizar ✓';
 
@@ -1579,6 +1595,14 @@ function speakVoicePhraseSlow() {
     if (!currentMissionDay) return;
     const phrase = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases[voicePhraseIdx];
     speak(phrase.en, 0.42);
+}
+
+function submitManual() {
+    const input = document.getElementById('manual-input');
+    const text  = (input?.value || '').trim();
+    if (!text) return;
+    showVoiceFeedback(text);
+    input.value = '';
 }
 
 function toggleRecognition() {
