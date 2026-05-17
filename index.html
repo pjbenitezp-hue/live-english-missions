@@ -1689,9 +1689,11 @@ const SUGGESTIONS = [
 ];
 
 function buildSystemPrompt() {
-    const done = S.completedDays.length;
-    const pct  = getConfidence();
-    const skills = MISSIONS.filter(m => S.completedDays.includes(m.day)).map(m => m.skill).join(', ') || 'ninguna todavía';
+    const done1 = S.completedDays.length;
+    const done2 = S.completedDays2.length;
+    const pct   = getConfidence();
+    const skills1 = MISSIONS.filter(m => S.completedDays.includes(m.day)).map(m => m.skill).join(', ') || 'ninguna todavía';
+    const skills2 = MISSIONS_S2.filter(m => S.completedDays2.includes(m.day)).map(m => m.skill).join(', ') || 'ninguna todavía';
     return `Eres Lia, una tutora de inglés cálida, motivadora y profesional para adultos hispanohablantes que son principiantes aprendiendo inglés con una app llamada "Live English Missions".
 
 PERSONALIDAD:
@@ -1706,10 +1708,10 @@ IDIOMA:
 - Si corriges un error: primero valida, muestra la forma correcta, explica brevemente por qué
 
 CONTEXTO DEL USUARIO:
-- Misiones completadas: ${done} de 7
-- Nivel de confianza: ${pct}%
-- Habilidades desbloqueadas: ${skills}
-- La app se enfoca en inglés para viajes reales: aeropuerto, taxi, hotel, restaurante, problemas
+- Temporada 1 (viajes): ${done1} de 7 misiones. Habilidades: ${skills1}
+- Temporada 2 (oficina): ${done2} de 7 misiones. Habilidades: ${skills2}
+- Nivel de confianza general: ${pct}%
+- La app cubre inglés para viajes (aeropuerto, taxi, hotel, restaurante) y para la oficina (reuniones, emails, colegas)
 
 REGLAS:
 - Nunca inventes frases incorrectas como ejemplos sin corregirlas
@@ -1720,6 +1722,9 @@ REGLAS:
 function renderChatUI() {
     const container = document.getElementById('chat-container');
     if (!container) return;
+
+    // Reset chat history so errors don't persist between screen navigations
+    chatHistory = [];
 
     if (!geminiApiKey) {
         container.innerHTML = `
