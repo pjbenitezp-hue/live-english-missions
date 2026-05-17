@@ -759,6 +759,163 @@ const MISSIONS = [
   },
 ];
 
+// ════════════════════════════════════════════════
+//  TEMPORADA 2 — En la oficina en inglés
+// ════════════════════════════════════════════════
+const MISSIONS_S2 = [
+  {
+    day:1, mapTitle:'Primer día de trabajo', title:'Tu primer día en la oficina',
+    sceneColors:'linear-gradient(135deg,#1565C0 0%,#0D47A1 100%)',
+    scene:{ emoji:'🏢', location:'Recepción de la empresa', desc:'Es tu primer día. La gerente de Recursos Humanos te recibe en la entrada.' },
+    character:{ emoji:'👩‍💼', name:'Sarah', role:'Gerente de Recursos Humanos' },
+    dialogue:{ en:'"Good morning! Welcome to the company. You must be Carlos, our new team member!"', es:'¡Buenos días! Bienvenido. ¡Tú debes ser Carlos, nuestro nuevo compañero!' },
+    phrases:[
+      { en:"Good morning. I'm Carlos, the new employee.", es:'Buenos días. Soy Carlos, el nuevo empleado.' },
+      { en:'Nice to meet you.',   es:'Mucho gusto.' },
+      { en:"I'm ready to start.", es:'Estoy listo para empezar.' },
+      { en:'Where should I go?',  es:'¿A dónde debo ir?' },
+    ],
+    skill:'Presentarte en el trabajo', skillIcon:'🏢',
+    liaMessage:'¡Excelente primer día! Ya sabes cómo presentarte en un entorno laboral en inglés.',
+    liaErrors:[
+      { wrong:'"I am new"', correct:'"I\'m the new employee" o "I just started today"' },
+      { wrong:'"Where I go?"', correct:'"Where should I go?"' },
+    ],
+    liaRec:'Mañana aprenderás a presentarte a tus colegas. Frase clave: "What do you do here?"',
+    liaPractice:["Good morning. I'm ___.","Nice to meet you.","I'm ready to start."],
+  },
+  {
+    day:2, mapTitle:'Conocer al equipo', title:'Conoce a tus colegas',
+    sceneColors:'linear-gradient(135deg,#2E7D32 0%,#1B5E20 100%)',
+    scene:{ emoji:'👥', location:'Sala de trabajo', desc:'Te presentan a tu equipo. Tienes que hacer conversación y aprender qué hacen.' },
+    character:{ emoji:'🧑‍💻', name:'David', role:'Colega de equipo' },
+    dialogue:{ en:'"Hey! You must be the new person. What\'s your role here?"', es:'¡Hola! Tú debes ser el nuevo. ¿Cuál es tu cargo aquí?' },
+    phrases:[
+      { en:"I'm the new marketing assistant.", es:'Soy el nuevo asistente de marketing.' },
+      { en:'I just started today.',            es:'Acabo de empezar hoy.' },
+      { en:'Can you show me around?',          es:'¿Puedes mostrarme las instalaciones?' },
+      { en:'What do you do here?',             es:'¿Qué haces aquí?' },
+    ],
+    skill:'Presentarte a colegas', skillIcon:'👥',
+    liaMessage:'¡Genial! Ya puedes romper el hielo con tus compañeros en inglés. Esas frases son perfectas.',
+    liaErrors:[
+      { wrong:'"I start today"', correct:'"I just started today"' },
+      { wrong:'"Show me the office"', correct:'"Can you show me around?" (más natural)' },
+    ],
+    liaRec:'Mañana aprenderás a participar en reuniones. Frase clave: "I have a question."',
+    liaPractice:["I'm the new ___.",'I just started today.','What do you do here?'],
+  },
+  {
+    day:3, mapTitle:'En una reunión', title:'Tu primera reunión en inglés',
+    sceneColors:'linear-gradient(135deg,#6A1B9A 0%,#4A148C 100%)',
+    scene:{ emoji:'📊', location:'Sala de reuniones', desc:'Tu equipo tiene una reunión matutina. El líder te pide una actualización del proyecto.' },
+    character:{ emoji:'👔', name:'Manager Tom', role:'Líder de equipo' },
+    dialogue:{ en:'"Okay team, let\'s start. Carlos, can you give us a quick update?"', es:'Bien equipo, empecemos. Carlos, ¿puedes darnos una actualización?' },
+    phrases:[
+      { en:'The project is going well.',       es:'El proyecto va bien.' },
+      { en:'I have a question.',               es:'Tengo una pregunta.' },
+      { en:'Can you repeat that, please?',     es:'¿Puedes repetir eso, por favor?' },
+      { en:'I agree with that.',               es:'Estoy de acuerdo con eso.' },
+    ],
+    skill:'Participar en reuniones', skillIcon:'📊',
+    liaMessage:'¡Impresionante! Participar en reuniones en inglés es uno de los retos más grandes. Ya tienes las frases esenciales.',
+    liaErrors:[
+      { wrong:'"I have question"', correct:'"I have A question" (no olvides el artículo)' },
+      { wrong:'"I agree"', correct:'"I agree WITH THAT" o "I agree with you"' },
+    ],
+    liaRec:'Mañana aprenderás a pedir ayuda a un colega. Frase clave: "Can you show me how?"',
+    liaPractice:['The project is going well.','I have a question.','I agree with that.'],
+  },
+  {
+    day:4, mapTitle:'Pedir ayuda en el trabajo', title:'Pide ayuda a un colega',
+    sceneColors:'linear-gradient(135deg,#E65100 0%,#BF360C 100%)',
+    scene:{ emoji:'💻', location:'Tu escritorio', desc:'Tienes un problema con el sistema. Necesitas pedirle ayuda a un colega más experimentado.' },
+    character:{ emoji:'🧑‍🔧', name:'Lisa', role:'Colega senior' },
+    dialogue:{ en:'"Carlos, how\'s everything going? Do you need any help?"', es:'Carlos, ¿cómo va todo? ¿Necesitas ayuda?' },
+    phrases:[
+      { en:'I need some help with this.',    es:'Necesito ayuda con esto.' },
+      { en:"I don't know how to do this.",   es:'No sé cómo hacer esto.' },
+      { en:'Can you show me how?',           es:'¿Puedes mostrarme cómo?' },
+      { en:'Thank you, I understand now.',   es:'Gracias, ahora entiendo.' },
+    ],
+    skill:'Pedir ayuda en el trabajo', skillIcon:'🤝',
+    liaMessage:'¡Muy bien! Pedir ayuda con confianza es una habilidad clave. Nadie espera que lo sepas todo.',
+    liaErrors:[
+      { wrong:'"I no know"', correct:'"I DON\'T know how to do this"' },
+      { wrong:'"Show me how do this"', correct:'"Can you show me HOW TO DO this?"' },
+    ],
+    liaRec:'Mañana practicarás emails de trabajo. Frase clave: "Thank you for your email."',
+    liaPractice:['I need help with ___.',"Can you show me how?",'Thank you, I understand now.'],
+  },
+  {
+    day:5, mapTitle:'Email de trabajo', title:'Escribe un email profesional',
+    sceneColors:'linear-gradient(135deg,#00695C 0%,#004D40 100%)',
+    scene:{ emoji:'📧', location:'Tu computadora', desc:'Recibes un email de un cliente y necesitas responder de forma profesional en inglés.' },
+    character:{ emoji:'📩', name:'Email de Alex', role:'Cliente externo' },
+    dialogue:{ en:'"Hi Carlos, can you please send me the report by Friday? Thanks."', es:'Hola Carlos, ¿puedes enviarme el informe antes del viernes? Gracias.' },
+    phrases:[
+      { en:'Thank you for your email.',                    es:'Gracias por tu correo.' },
+      { en:'I will send it today.',                        es:'Lo enviaré hoy.' },
+      { en:'Please let me know if you need anything else.',es:'Por favor avísame si necesitas algo más.' },
+      { en:'Best regards.',                                es:'Saludos cordiales.' },
+    ],
+    skill:'Responder emails en inglés', skillIcon:'📧',
+    liaMessage:'¡Excelente! Los emails de trabajo siguen una estructura fija. Ya tienes las frases más importantes.',
+    liaErrors:[
+      { wrong:'"I send it today"', correct:'"I WILL send it today" (futuro con will)' },
+      { wrong:'"Best regard"', correct:'"Best regardS" — siempre en plural' },
+    ],
+    liaRec:'Mañana aprenderás a coordinar una reunión. Frase clave: "When are you free?"',
+    liaPractice:['Thank you for your email.','I will send ___ today.','Best regards.'],
+  },
+  {
+    day:6, mapTitle:'Coordinar una reunión', title:'Organiza una reunión',
+    sceneColors:'linear-gradient(135deg,#37474F 0%,#263238 100%)',
+    scene:{ emoji:'📅', location:'Pasillo de la oficina', desc:'Necesitas hablar con tu jefe sobre un tema importante. Tienes que coordinar una reunión.' },
+    character:{ emoji:'👨‍💼', name:'Manager Tom', role:'Tu jefe directo' },
+    dialogue:{ en:'"Carlos! Do you have a moment? Or are you busy right now?"', es:'¡Carlos! ¿Tienes un momento? ¿O estás ocupado ahora?' },
+    phrases:[
+      { en:'Can we schedule a meeting?',           es:'¿Podemos programar una reunión?' },
+      { en:"I'm available tomorrow at 10.",        es:'Estoy disponible mañana a las 10.' },
+      { en:'I have a concern about the project.',  es:'Tengo una preocupación sobre el proyecto.' },
+      { en:'When are you free?',                   es:'¿Cuándo estás libre?' },
+    ],
+    skill:'Coordinar reuniones en inglés', skillIcon:'📅',
+    liaMessage:'¡Fantástico! Ya puedes coordinar reuniones y expresar preocupaciones en inglés. Eso es iniciativa profesional real.',
+    liaErrors:[
+      { wrong:'"I am free tomorrow 10"', correct:'"I\'m available tomorrow AT 10"' },
+      { wrong:'"I have concern"', correct:'"I have A concern"' },
+    ],
+    liaRec:'¡Mañana es la conversación final de la Temporada 2! ¡Tú puedes!',
+    liaPractice:['Can we schedule a meeting?',"I'm available ___.",'When are you free?'],
+  },
+  {
+    day:7, mapTitle:'🏆 Conversación laboral final', title:'¡Conversación laboral final!',
+    sceneColors:'linear-gradient(135deg,#FF6B35 0%,#1565C0 100%)',
+    scene:{ emoji:'🎯', location:'Revisión de tu primer mes', desc:'¡Un mes en el trabajo! Tu jefe te llama para una revisión. Demuestra todo lo aprendido.' },
+    character:{ emoji:'👔', name:'Manager Tom', role:'Tu jefe' },
+    dialogue:{ en:'"Carlos! It\'s been one month. How are you finding everything here?"', es:'¡Carlos! Ha pasado un mes. ¿Cómo te está yendo aquí?' },
+    phrases:[
+      { en:"I'm really enjoying the team.",                      es:'Estoy disfrutando mucho el equipo.' },
+      { en:'The project is going well. I will send the report.', es:'El proyecto va bien. Enviaré el informe.' },
+      { en:"I have a question about next month's meeting.",      es:'Tengo una pregunta sobre la reunión del próximo mes.' },
+      { en:"I'm available whenever you need me.",                es:'Estoy disponible cuando me necesites.' },
+    ],
+    skill:'Comunicarte en inglés en el trabajo', skillIcon:'💼',
+    liaMessage:'¡LO LOGRASTE DE NUEVO! Completaste la Temporada 2. Ahora puedes presentarte, participar en reuniones, pedir ayuda, escribir emails y coordinar con tu equipo en inglés. ¡Eso es inglés profesional real!',
+    liaErrors:[],
+    liaRec:'¡Felicidades! Completaste ambas temporadas. ¡Estás listo para el inglés del mundo real!',
+    liaPractice:["I'm available ___.",'The project is going well.',"I have a question about ___."],
+  },
+];
+
+const SEASONS = [
+  { id:1, title:'Primer viaje en inglés',   icon:'✈️', missions: MISSIONS   },
+  { id:2, title:'En la oficina en inglés',  icon:'💼', missions: MISSIONS_S2 },
+];
+
+function getMissions(season) { return season === 2 ? MISSIONS_S2 : MISSIONS; }
+
 const LEVELS = [
   { name:'Viajero Principiante', icon:'🌱', min:0  },
   { name:'Explorador Valiente',  icon:'🌿', min:1  },
@@ -770,10 +927,16 @@ const LEVELS = [
 // ════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════
-let S = { completedDays:[], streak:0, lastDate:null };
+let S = { completedDays:[], completedDays2:[], streak:0, lastDate:null };
 
 function loadState() {
-    try { S = JSON.parse(localStorage.getItem('lem-v1') || 'null') || S; } catch(e){}
+    try {
+        const saved = JSON.parse(localStorage.getItem('lem-v1') || 'null');
+        if (saved) {
+            S = saved;
+            if (!S.completedDays2) S.completedDays2 = [];
+        }
+    } catch(e){}
 }
 
 function saveState() {
@@ -783,8 +946,9 @@ function saveState() {
 function resetState() {
     if (!confirm('¿Reiniciar todo el progreso?')) return;
     localStorage.removeItem('lem-v1');
-    S = { completedDays:[], streak:0, lastDate:null };
+    S = { completedDays:[], completedDays2:[], streak:0, lastDate:null };
     currentMissionDay = null;
+    currentMissionSeason = 1;
     practiced.clear();
     renderAll();
     goTo('screen-home');
@@ -794,30 +958,34 @@ function resetState() {
 //  HELPERS
 // ════════════════════════════════════════════════
 function getConfidence() {
-    const n = S.completedDays.length;
-    return n === 0 ? 0 : Math.round(n / 7 * 100);
+    const n = S.completedDays.length + S.completedDays2.length;
+    return n === 0 ? 0 : Math.round(n / 14 * 100);
 }
 
 function getLevel() {
-    const n = S.completedDays.length;
+    const n = S.completedDays.length + S.completedDays2.length;
     let lv = LEVELS[0];
     for (const l of LEVELS) { if (n >= l.min) lv = l; }
     return lv;
 }
 
-function getNextDay() {
+function getNextDay(season) {
+    const done = season === 2 ? S.completedDays2 : S.completedDays;
     for (let d = 1; d <= 7; d++) {
-        if (!S.completedDays.includes(d)) return d;
+        if (!done.includes(d)) return d;
     }
-    return null; // all done
+    return null;
 }
 
-function episodeState(day) {
-    if (S.completedDays.includes(day)) return 'completed';
-    const next = getNextDay();
+function episodeState(season, day) {
+    const done = season === 2 ? S.completedDays2 : S.completedDays;
+    if (done.includes(day)) return 'completed';
+    const next = getNextDay(season);
     if (day === next) return 'available';
     return 'locked';
 }
+
+function isS1Complete() { return S.completedDays.length === 7; }
 
 // ════════════════════════════════════════════════
 //  NAVIGATION
@@ -837,7 +1005,11 @@ function goTo(screenId) {
     if (screenId === 'screen-map')      renderMap();
     if (screenId === 'screen-tutor')    renderTutor();
     if (screenId === 'screen-progress') renderProgress();
-    if (screenId === 'screen-mission' && !currentMissionDay) openMission(getNextDay() || 1);
+    if (screenId === 'screen-mission' && !currentMissionDay) {
+        const s1next = getNextDay(1);
+        if (s1next) openMission(1, s1next);
+        else openMission(2, getNextDay(2) || 1);
+    }
 }
 
 // ════════════════════════════════════════════════
@@ -846,8 +1018,9 @@ function goTo(screenId) {
 function renderHome() {
     const pct = getConfidence();
     const lv  = getLevel();
-    const n   = S.completedDays.length;
-    const next = getNextDay();
+    const n1  = S.completedDays.length;
+    const n2  = S.completedDays2.length;
+    const totalDone = n1 + n2;
 
     document.getElementById('h-streak').textContent   = '🔥 ' + S.streak;
     document.getElementById('h-level').textContent    = '⭐ Nv.' + (LEVELS.indexOf(lv) + 1);
@@ -855,17 +1028,19 @@ function renderHome() {
     document.getElementById('h-level-icon').textContent = lv.icon;
     document.getElementById('h-level-name').textContent = lv.name;
     document.getElementById('h-pct2').textContent     = pct + '%';
-    document.getElementById('h-episode-info').textContent = `Temporada 1 · Episodio ${Math.min(n + 1, 7)} de 7`;
-    document.getElementById('h-done-count').textContent   = `${n} / 7 misiones`;
-    document.getElementById('h-bar').style.width = pct + '%';
+    document.getElementById('h-done-count').textContent = `${totalDone} / 14 misiones`;
+    document.getElementById('h-bar').style.width = Math.round(totalDone / 14 * 100) + '%';
 
     const card = document.getElementById('h-mission-card');
-    if (next) {
-        const m = MISSIONS[next - 1];
-        const done = S.completedDays.includes(next);
+
+    // Season 1 not done yet
+    const next1 = getNextDay(1);
+    if (next1) {
+        const m = MISSIONS[next1 - 1];
+        document.getElementById('h-episode-info').textContent = `Temporada 1 · Episodio ${Math.min(n1 + 1, 7)} de 7`;
         card.innerHTML = `
-        <div class="mission-card${done ? ' completed-card' : ''}" onclick="openAndGoMission(${next})">
-            <div class="mission-tag">📍 Día ${next} · Temporada 1</div>
+        <div class="mission-card" onclick="openAndGoMission(1,${next1})">
+            <div class="mission-tag">✈️ Día ${next1} · Temporada 1</div>
             <h2>${m.title}</h2>
             <p>${m.scene.desc}</p>
             <div class="mission-meta">
@@ -873,19 +1048,44 @@ function renderHome() {
                 <div class="mission-meta-item">🎯 4 frases</div>
                 <div class="mission-meta-item">⭐ +10 XP</div>
             </div>
-            <button class="btn-mission" onclick="event.stopPropagation();openAndGoMission(${next})">
+            <button class="btn-mission" onclick="event.stopPropagation();openAndGoMission(1,${next1})">
                 ▶&nbsp; Empezar misión
             </button>
         </div>`;
-    } else {
-        card.innerHTML = `
-        <div class="mission-card completed-card">
-            <div class="mission-tag">🏆 Temporada 1 — Completada</div>
-            <h2>¡Misión cumplida!</h2>
-            <p>Completaste las 7 misiones de la primera temporada. ¡Eres un Maestro del Viaje!</p>
-            <button class="btn-mission" onclick="goTo('screen-progress')">Ver mis logros →</button>
-        </div>`;
+        return;
     }
+
+    // Season 1 done, Season 2 in progress or not started
+    const next2 = getNextDay(2);
+    if (next2) {
+        const m = MISSIONS_S2[next2 - 1];
+        document.getElementById('h-episode-info').textContent = `Temporada 2 · Episodio ${Math.min(n2 + 1, 7)} de 7`;
+        card.innerHTML = `
+        <div class="mission-card" style="background:linear-gradient(135deg,#1E3A6E 0%,#2D5AA0 100%);box-shadow:0 8px 28px rgba(30,58,110,.4);" onclick="openAndGoMission(2,${next2})">
+            <div class="mission-tag">💼 Día ${next2} · Temporada 2</div>
+            <h2>${m.title}</h2>
+            <p>${m.scene.desc}</p>
+            <div class="mission-meta">
+                <div class="mission-meta-item">⏱ 5 min</div>
+                <div class="mission-meta-item">🎯 4 frases</div>
+                <div class="mission-meta-item">⭐ +15 XP</div>
+            </div>
+            <button class="btn-mission" style="color:#1E3A6E;" onclick="event.stopPropagation();openAndGoMission(2,${next2})">
+                ▶&nbsp; Empezar misión
+            </button>
+        </div>`;
+        return;
+    }
+
+    // All 14 missions done!
+    document.getElementById('h-episode-info').textContent = '¡Todo completado! 🏆';
+    card.innerHTML = `
+    <div class="mission-card completed-card">
+        <div class="mission-tag">🏆 ¡Ambas temporadas completadas!</div>
+        <h2>¡Eres un campeón!</h2>
+        <p>Completaste las 14 misiones. ¡Tienes inglés de viaje Y de trabajo!</p>
+        <button class="btn-mission" onclick="goTo('screen-progress')">Ver mis logros →</button>
+    </div>`;
 }
 
 // ════════════════════════════════════════════════
@@ -894,51 +1094,65 @@ function renderHome() {
 function renderMap() {
     const path = document.getElementById('episode-path');
     path.innerHTML = '';
-    MISSIONS.forEach((m, i) => {
-        const isLast = i === MISSIONS.length - 1;
-        const st = episodeState(m.day);
-        const icon = st === 'completed' ? '✅' : st === 'available' ? '🎯' : '🔒';
-        const dayLabel = st === 'available'  ? `Día ${m.day} · Disponible ahora` :
-                         st === 'completed'  ? `Día ${m.day} · Completado` :
-                                              `Día ${m.day} · Bloqueado`;
-        const click = (st !== 'locked') ? `onclick="openAndGoMission(${m.day})"` : '';
-        const lineClass = st === 'completed' ? 'episode-line done' : 'episode-line';
-        path.innerHTML += `
-        <div class="episode-row ${st}">
-            <div class="episode-left">
-                <div class="episode-dot ${st}">${icon}</div>
-                ${!isLast ? `<div class="${lineClass}"></div>` : ''}
-            </div>
-            <div class="episode-info" ${click}>
-                <div class="ep-day ${st}">${dayLabel}</div>
-                <div class="ep-title">${m.mapTitle}</div>
-                <div class="ep-skill">Habilidad: ${m.skill}</div>
-            </div>
-        </div>`;
-    });
+
+    function renderSeason(missions, season, seasonLabel, seasonIcon, locked) {
+        path.innerHTML += `<div style="font-size:13px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:18px 0 10px;">${seasonIcon} ${seasonLabel}</div>`;
+        missions.forEach((m, i) => {
+            const isLast = i === missions.length - 1;
+            const st = locked ? 'locked' : episodeState(season, m.day);
+            const icon = st === 'completed' ? '✅' : st === 'available' ? '🎯' : '🔒';
+            const dayLabel = st === 'available' ? `Día ${m.day} · Disponible ahora` :
+                             st === 'completed' ? `Día ${m.day} · Completado` :
+                                                 `Día ${m.day} · Bloqueado`;
+            const click = (st !== 'locked') ? `onclick="openAndGoMission(${season},${m.day})"` : '';
+            const lineClass = st === 'completed' ? 'episode-line done' : 'episode-line';
+            path.innerHTML += `
+            <div class="episode-row ${st}">
+                <div class="episode-left">
+                    <div class="episode-dot ${st}">${icon}</div>
+                    ${!isLast ? `<div class="${lineClass}"></div>` : ''}
+                </div>
+                <div class="episode-info" ${click}>
+                    <div class="ep-day ${st}">${dayLabel}</div>
+                    <div class="ep-title">${m.mapTitle}</div>
+                    <div class="ep-skill">Habilidad: ${m.skill}</div>
+                </div>
+            </div>`;
+        });
+    }
+
+    renderSeason(MISSIONS, 1, 'Temporada 1 — Primer viaje', '✈️', false);
+    renderSeason(MISSIONS_S2, 2, 'Temporada 2 — En la oficina', '💼', !isS1Complete());
+
+    if (!isS1Complete()) {
+        path.innerHTML += `<div style="text-align:center;padding:12px;font-size:12px;color:var(--text-muted);">🔒 Completa la Temporada 1 para desbloquear</div>`;
+    }
 }
 
 // ════════════════════════════════════════════════
 //  MISSION
 // ════════════════════════════════════════════════
 let currentMissionDay = null;
+let currentMissionSeason = 1;
 const practiced = new Set();
 
-function openAndGoMission(day) {
-    openMission(day);
+function openAndGoMission(season, day) {
+    openMission(season, day);
     goTo('screen-mission');
 }
 
-function openMission(day) {
+function openMission(season, day) {
     if (!day) return;
     currentMissionDay = day;
+    currentMissionSeason = season || 1;
     practiced.clear();
-    const m = MISSIONS[day - 1];
-    const isDone = S.completedDays.includes(day);
+    const missions = getMissions(currentMissionSeason);
+    const m = missions[day - 1];
+    const isDone = (currentMissionSeason === 2 ? S.completedDays2 : S.completedDays).includes(day);
 
     // Header
     document.getElementById('m-title').textContent    = `Día ${day}: ${m.mapTitle}`;
-    document.getElementById('m-subtitle').textContent = `Temporada 1 · ${m.scene.location}`;
+    document.getElementById('m-subtitle').textContent = `Temporada ${currentMissionSeason} · ${m.scene.location}`;
     document.getElementById('m-back-btn').onclick = () => goTo('screen-home');
 
     // Dots
@@ -995,16 +1209,18 @@ function markPhraseDone(n) {
 }
 
 function practicePhrase(n) {
-    if (S.completedDays.includes(currentMissionDay)) {
-        speak(MISSIONS[currentMissionDay - 1].phrases[n - 1].en);
+    const missions = getMissions(currentMissionSeason);
+    const done = currentMissionSeason === 2 ? S.completedDays2 : S.completedDays;
+    if (done.includes(currentMissionDay)) {
+        speak(missions[currentMissionDay - 1].phrases[n - 1].en);
         return;
     }
     practiced.add(n);
     markPhraseDone(n);
-    speak(MISSIONS[currentMissionDay - 1].phrases[n - 1].en);
+    speak(missions[currentMissionDay - 1].phrases[n - 1].en);
 
     // Update progress dots
-    const total = MISSIONS[currentMissionDay - 1].phrases.length;
+    const total = missions[currentMissionDay - 1].phrases.length;
     for (let i = 1; i <= total; i++) {
         const el = document.getElementById('pd' + i);
         if (!el) continue;
@@ -1062,7 +1278,7 @@ function speak(text, rate = 0.82) {
 
 function listenAll() {
     if (!('speechSynthesis' in window)) return;
-    const phrases = MISSIONS[currentMissionDay - 1].phrases;
+    const phrases = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases;
     speechSynthesis.cancel();
     let i = 0;
     function next() {
@@ -1097,7 +1313,7 @@ function openVoice() {
 
 function renderVoicePhrase() {
     if (!currentMissionDay) return;
-    const phrases = MISSIONS[currentMissionDay - 1].phrases;
+    const phrases = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases;
     const phrase  = phrases[voicePhraseIdx];
     const total   = phrases.length;
 
@@ -1122,7 +1338,7 @@ function renderVoicePhrase() {
 
 function speakVoicePhrase() {
     if (!currentMissionDay) return;
-    const phrase = MISSIONS[currentMissionDay - 1].phrases[voicePhraseIdx];
+    const phrase = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases[voicePhraseIdx];
     speak(phrase.en, 0.75);
 }
 
@@ -1188,7 +1404,7 @@ function resetMicBtn() {
 }
 
 function showVoiceFeedback(transcript) {
-    const phrase = MISSIONS[currentMissionDay - 1].phrases[voicePhraseIdx].en;
+    const phrase = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases[voicePhraseIdx].en;
     const score  = voiceScore(transcript, phrase);
     const fb     = document.getElementById('v-feedback');
     fb.style.display = 'block';
@@ -1222,7 +1438,7 @@ function voiceScore(transcript, expected) {
 function voiceNext() {
     if (recognition) recognition.abort();
     isListening = false;
-    const total = MISSIONS[currentMissionDay - 1].phrases.length;
+    const total = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases.length;
     if (voicePhraseIdx < total - 1) {
         voicePhraseIdx++;
         renderVoicePhrase();
@@ -1236,7 +1452,7 @@ function closeVoice() {
     isListening = false;
     document.getElementById('voice-modal').classList.remove('show');
     // Mark all phrases as practiced
-    const total = MISSIONS[currentMissionDay - 1].phrases.length;
+    const total = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases.length;
     for (let i = 1; i <= total; i++) {
         if (!practiced.has(i)) { practiced.add(i); markPhraseDone(i); }
     }
@@ -1248,9 +1464,11 @@ function closeVoice() {
 // ── Complete ──
 function completeMission() {
     const day = currentMissionDay;
-    if (!S.completedDays.includes(day)) {
-        S.completedDays.push(day);
-        // Update streak
+    const season = currentMissionSeason;
+    const done = season === 2 ? S.completedDays2 : S.completedDays;
+
+    if (!done.includes(day)) {
+        done.push(day);
         const today = new Date().toDateString();
         if (S.lastDate !== today) {
             const yesterday = new Date(Date.now() - 86400000).toDateString();
@@ -1260,16 +1478,17 @@ function completeMission() {
         saveState();
     }
 
-    const m = MISSIONS[day - 1];
-    document.getElementById('cm-emoji').textContent      = day === 7 ? '🏆' : '🎉';
-    document.getElementById('cm-title').textContent      = day === 7 ? '¡Temporada 1 completada!' : '¡Misión completada!';
-    document.getElementById('cm-desc').textContent       = day === 7
-        ? '¡Increíble! Terminaste las 7 misiones y desbloqueaste la habilidad final.'
+    const m = getMissions(season)[day - 1];
+    const isSeasonEnd = day === 7;
+    document.getElementById('cm-emoji').textContent      = isSeasonEnd ? '🏆' : '🎉';
+    document.getElementById('cm-title').textContent      = isSeasonEnd ? `¡Temporada ${season} completada!` : '¡Misión completada!';
+    document.getElementById('cm-desc').textContent       = isSeasonEnd
+        ? (season === 2 ? '¡Increíble! Completaste AMBAS temporadas. ¡Eres un experto!' : '¡Increíble! Temporada 1 lista. Ahora desbloqueas la Temporada 2: inglés en la oficina.')
         : `Completaste el Día ${day}. ¡Eso es un logro real!`;
     document.getElementById('cm-skill-icon').textContent = m.skillIcon;
     document.getElementById('cm-skill-name').textContent = m.skill;
 
-    if (day === 7) {
+    if (isSeasonEnd) {
         document.getElementById('cm-btn').onclick = () => {
             document.getElementById('complete-modal').classList.remove('show');
             document.getElementById('season-modal').classList.add('show');
@@ -1314,7 +1533,13 @@ function renderTutor() {
         return;
     }
 
-    const m = MISSIONS[lastDay - 1];
+    // Find which season the last completed mission belongs to
+    const lastSeason = S.completedDays2.length > 0 ? 2 : 1;
+    const lastMissions = getMissions(lastSeason);
+    const lastDayInSeason = lastSeason === 2
+        ? (S.completedDays2.length > 0 ? Math.max(...S.completedDays2) : null)
+        : lastDay;
+    const m = lastMissions[lastDayInSeason - 1];
     let errorsHtml = '';
     if (m.liaErrors.length > 0) {
         errorsHtml = `
@@ -1363,34 +1588,50 @@ function renderTutor() {
 //  PROGRESS
 // ════════════════════════════════════════════════
 function renderProgress() {
-    const n    = S.completedDays.length;
+    const n1 = S.completedDays.length;
+    const n2 = S.completedDays2.length;
+    const total = n1 + n2;
     const pct  = getConfidence();
-    const phrases = n * 4;
+    const phrases = total * 4;
 
-    const unlocked = MISSIONS.filter(m => S.completedDays.includes(m.day));
-    const locked   = MISSIONS.filter(m => !S.completedDays.includes(m.day));
+    function skillCards(missions, season, doneList) {
+        const unlocked = missions.filter(m => doneList.includes(m.day));
+        const locked   = missions.filter(m => !doneList.includes(m.day));
+        const s1done = isS1Complete();
+        let html = '';
+        if (unlocked.length > 0) {
+            html += unlocked.map(m => `
+            <div class="skill-card unlocked" onclick="openAndGoMission(${season},${m.day})">
+                <div class="skill-icon">${m.skillIcon}</div>
+                <div class="skill-content">
+                    <h4>Puedes: ${m.skill}</h4>
+                    <p>T${season} · Día ${m.day} · Completado</p>
+                </div>
+                <div class="skill-badge">⭐</div>
+            </div>`).join('');
+        }
+        if (locked.length > 0 && (season === 1 || s1done)) {
+            html += locked.map(m => `
+            <div class="skill-card locked">
+                <div class="skill-icon">${m.skillIcon}</div>
+                <div class="skill-content">
+                    <h4>Puedes: ${m.skill}</h4>
+                    <p>T${season} · Disponible en Día ${m.day}</p>
+                </div>
+                <div class="skill-badge">🔒</div>
+            </div>`).join('');
+        }
+        return html;
+    }
 
-    const unlockedHtml = unlocked.length > 0
-        ? unlocked.map(m => `
-        <div class="skill-card unlocked" onclick="openAndGoMission(${m.day})">
-            <div class="skill-icon">${m.skillIcon}</div>
-            <div class="skill-content">
-                <h4>Puedes: ${m.skill}</h4>
-                <p>Completado · Día ${m.day}</p>
-            </div>
-            <div class="skill-badge">⭐</div>
-        </div>`).join('')
-        : '<p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Completa tu primera misión para desbloquear habilidades.</p>';
+    const s1Html = skillCards(MISSIONS, 1, S.completedDays);
+    const s2Html = isS1Complete()
+        ? skillCards(MISSIONS_S2, 2, S.completedDays2)
+        : `<div style="font-size:13px;color:var(--text-muted);padding:8px 0;">🔒 Completa la Temporada 1 para desbloquear</div>`;
 
-    const lockedHtml = locked.map(m => `
-        <div class="skill-card locked">
-            <div class="skill-icon">${m.skillIcon}</div>
-            <div class="skill-content">
-                <h4>Puedes: ${m.skill}</h4>
-                <p>Disponible en Día ${m.day}</p>
-            </div>
-            <div class="skill-badge">🔒</div>
-        </div>`).join('');
+    const noSkills = total === 0
+        ? '<p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Completa tu primera misión para desbloquear habilidades.</p>'
+        : '';
 
     document.getElementById('progress-body').innerHTML = `
     <div class="pstats">
@@ -1399,8 +1640,8 @@ function renderProgress() {
             <div class="pstat-lbl">días de racha</div>
         </div>
         <div class="pstat">
-            <span class="pstat-val">${n}</span>
-            <div class="pstat-lbl">${n === 1 ? 'misión hecha' : 'misiones hechas'}</div>
+            <span class="pstat-val">${total}</span>
+            <div class="pstat-lbl">${total === 1 ? 'misión hecha' : 'misiones hechas'}</div>
         </div>
         <div class="pstat">
             <span class="pstat-val">${phrases}</span>
@@ -1408,9 +1649,11 @@ function renderProgress() {
         </div>
     </div>
     <div class="skills-section">
-        <h3>✅ Habilidades desbloqueadas</h3>
-        ${unlockedHtml}
-        ${locked.length > 0 ? `<h3 style="margin-top:6px;">🔒 Próximas habilidades</h3>${lockedHtml}` : ''}
+        ${noSkills}
+        <h3>✈️ Temporada 1 — Viaje</h3>
+        ${s1Html || '<p style="font-size:13px;color:var(--text-muted);">Sin completar aún</p>'}
+        <h3 style="margin-top:10px;">💼 Temporada 2 — Oficina</h3>
+        ${s2Html}
     </div>
     <button class="reset-btn" onclick="resetState()">↺ Reiniciar progreso (demo)</button>`;
 }
@@ -1423,8 +1666,12 @@ function renderAll() {
     renderMap();
     renderTutor();
     renderProgress();
-    const next = getNextDay();
-    if (next) openMission(next);
+    const s1next = getNextDay(1);
+    if (s1next) openMission(1, s1next);
+    else {
+        const s2next = getNextDay(2);
+        if (s2next) openMission(2, s2next);
+    }
 }
 
 // ════════════════════════════════════════════════
