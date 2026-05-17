@@ -1533,7 +1533,7 @@ async function sendChat() {
 
     try {
         const res = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1549,7 +1549,13 @@ async function sendChat() {
         removeTyping(typingId);
 
         if (data.error) {
-            appendBubble('lia', '⚠️ Error: ' + (data.error.message || 'Clave incorrecta. Verifica tu clave de Gemini.'));
+            const code = data.error.code || 0;
+            const msg = code === 429
+                ? '⚠️ Alcanzaste el límite gratuito de mensajes por minuto. Espera unos segundos e intenta de nuevo.'
+                : code === 401 || code === 403
+                ? '⚠️ Clave de Gemini incorrecta. Ve a configuración y verifica tu clave.'
+                : '⚠️ Error de Gemini. Intenta de nuevo en unos segundos.';
+            appendBubble('lia', msg);
             return;
         }
 
