@@ -234,6 +234,74 @@
         .reset-btn { background:none; border:1px solid var(--border); border-radius:10px; padding:10px; font-size:12px; color:var(--text-muted); cursor:pointer; width:100%; margin-top:4px; }
         .reset-btn:hover { background:var(--border); }
 
+        /* ── PROGRESS TABS ── */
+        .progress-tabs { display:flex; background:var(--border); border-radius:12px; padding:3px; margin:16px 16px 0; }
+        .progress-tab { flex:1; text-align:center; padding:9px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; color:var(--text-muted); transition:all .2s; }
+        .progress-tab.active { background:var(--card); color:var(--primary); box-shadow:0 1px 6px rgba(0,0,0,.1); }
+
+        /* ── MI GUÍA ── */
+        .guide-curriculum-header { padding:16px 16px 0; }
+        .curriculum-bar { background:var(--border); border-radius:100px; height:8px; overflow:hidden; margin-top:8px; }
+        .curriculum-fill { height:100%; border-radius:100px; background:linear-gradient(90deg,var(--success),#00E5AE); transition:width .6s; }
+        .guide-season-label { font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; padding:18px 16px 8px; }
+
+        .lesson-card { background:var(--card); border-radius:18px; margin:0 16px 14px; box-shadow:0 2px 12px rgba(0,0,0,.06); overflow:hidden; }
+        .lesson-card.locked { opacity:.5; }
+        .lesson-header { padding:16px; cursor:pointer; display:flex; align-items:center; gap:12px; }
+        .lesson-number { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:white; flex-shrink:0; }
+        .lesson-num-s1 { background:linear-gradient(135deg,var(--accent),#FF9A4A); }
+        .lesson-num-s2 { background:linear-gradient(135deg,var(--primary),var(--primary-light)); }
+        .lesson-header-info { flex:1; }
+        .lesson-title { font-size:14px; font-weight:700; color:var(--text); }
+        .lesson-subtitle { font-size:11px; color:var(--text-muted); margin-top:2px; }
+        .lesson-expand-icon { font-size:12px; color:var(--text-muted); transition:transform .2s; }
+        .lesson-expand-icon.open { transform:rotate(180deg); }
+        .lesson-body { display:none; border-top:1px solid var(--border); padding:14px 16px; }
+        .lesson-body.open { display:block; }
+
+        .lesson-section { padding:14px 16px; border-bottom:1px solid var(--border); }
+        .lesson-section:last-child { border-bottom:none; }
+        .lesson-section-title { font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:.9px; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+
+        .grammar-box { background:linear-gradient(135deg,rgba(30,58,110,.05),rgba(45,90,160,.08)); border-radius:12px; padding:12px 14px; border-left:3px solid var(--primary-light); }
+        .grammar-title-text { font-size:14px; font-weight:800; color:var(--primary); margin-bottom:6px; }
+        .grammar-rule-text { font-size:12px; font-weight:700; color:var(--primary-light); font-family:monospace; margin-bottom:6px; }
+        .grammar-detail-text { font-size:12px; color:var(--text); line-height:1.6; }
+
+        .conjugation-table { width:100%; border-collapse:collapse; margin-top:8px; border-radius:10px; overflow:hidden; }
+        .conjugation-table th { background:var(--primary); color:white; font-size:11px; padding:7px 10px; text-align:left; }
+        .conjugation-table td { font-size:12px; padding:7px 10px; border-bottom:1px solid var(--border); }
+        .conjugation-table tr:last-child td { border-bottom:none; }
+        .conjugation-table tr:nth-child(even) td { background:rgba(30,58,110,.03); }
+        .conj-pronoun { font-weight:700; color:var(--primary); }
+        .conj-form { font-weight:600; color:var(--accent); }
+        .conj-example { color:var(--text-muted); font-style:italic; }
+
+        .phonetics-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .phonetic-card { background:var(--bg); border-radius:10px; padding:10px 12px; border:1px solid var(--border); }
+        .phonetic-word { font-size:14px; font-weight:700; color:var(--text); }
+        .phonetic-hint { font-size:11px; color:var(--accent); font-weight:600; }
+        .phonetic-es { font-size:11px; color:var(--text-muted); margin-top:2px; }
+        .phonetic-example { font-size:11px; color:var(--text); font-style:italic; margin-top:3px; }
+
+        .mistakes-list { display:flex; flex-direction:column; gap:8px; }
+        .mistake-item { border-radius:10px; overflow:hidden; }
+        .mistake-wrong { background:rgba(229,62,62,.06); border:1px solid rgba(229,62,62,.2); padding:8px 12px; font-size:12px; color:#c53030; }
+        .mistake-correct { background:rgba(0,200,150,.06); border:1px solid rgba(0,200,150,.2); border-top:none; padding:8px 12px; font-size:12px; color:#276749; }
+        .mistake-label { font-size:10px; font-weight:700; opacity:.7; margin-bottom:2px; }
+        .mistake-note { font-size:11px; color:var(--text-muted); margin-top:4px; font-style:italic; }
+
+        .cultural-box { background:linear-gradient(135deg,rgba(255,184,0,.06),rgba(255,107,53,.06)); border-radius:12px; padding:12px 14px; border-left:3px solid var(--accent-warm); font-size:12px; color:var(--text); line-height:1.6; }
+
+        .review-list { display:flex; flex-direction:column; gap:12px; }
+        .review-item { background:var(--bg); border-radius:12px; padding:12px; }
+        .review-question { font-size:13px; font-weight:600; color:var(--text); margin-bottom:8px; }
+        .review-options { display:flex; flex-direction:column; gap:6px; }
+        .review-option { border:1.5px solid var(--border); border-radius:8px; padding:8px 12px; font-size:12px; cursor:pointer; transition:all .2s; text-align:left; background:var(--card); color:var(--text); }
+        .review-option.correct { background:rgba(0,200,150,.1); border-color:var(--success); color:#276749; font-weight:700; }
+        .review-option.wrong { background:rgba(229,62,62,.08); border-color:#fc8181; color:#c53030; }
+        .review-option:disabled { cursor:default; }
+
         /* ── MODALS ── */
         .modal-overlay { display:none; position:fixed; inset:0; background:rgba(10,15,30,.65); z-index:200; align-items:flex-end; justify-content:center; }
         .modal-overlay.show { display:flex; }
@@ -573,7 +641,12 @@
                 <h1>Mi progreso</h1>
                 <p>Estas son habilidades reales que ya tienes</p>
             </div>
-            <div class="progress-body" id="progress-body"></div>
+            <div class="progress-tabs">
+                <div class="progress-tab active" id="tab-stats" onclick="switchProgressTab('stats')">📊 Estadísticas</div>
+                <div class="progress-tab" id="tab-guide" onclick="switchProgressTab('guide')">📖 Mi Guía</div>
+            </div>
+            <div id="progress-body"></div>
+            <div id="guide-body" style="display:none;padding:16px;flex-direction:column;gap:14px;"></div>
         </div>
     </div>
 
@@ -1097,6 +1170,398 @@ const LEARNED = {
       tip:'El inglés de trabajo prioriza claridad y cortesía. Frases cortas + "please" = comunicación profesional perfecta.'
     },
   }
+};
+
+// ════════════════════════════════════════════════
+//  GUÍA CURRICULAR — Libro de texto por misión
+// ════════════════════════════════════════════════
+const GUIDE = {
+ s1:{
+  1:{
+   grammarDetail:'El verbo "to be" (ser/estar) es el más fundamental del inglés. Cambia según el sujeto: I AM, You ARE, He/She/It IS, We/They ARE. A diferencia del español, en inglés el sujeto NUNCA se omite — aunque en español decimos "Soy Carlos", en inglés debes decir "I am Carlos".',
+   conjugation:[
+    {pronoun:'I',form:'am',example:'"I am Carlos." — Yo soy Carlos.'},
+    {pronoun:'You',form:'are',example:'"You are from Colombia." — Tú eres de Colombia.'},
+    {pronoun:'He / She / It',form:'is',example:'"She is the officer." — Ella es la agente.'},
+    {pronoun:'We / They',form:'are',example:'"We are travelers." — Somos viajeros.'},
+   ],
+   phonetics:[
+    {word:'name',phonetic:'neim',es:'nombre',example:'"My name is Carlos."'},
+    {word:'from',phonetic:'from',es:'de / desde',example:'"I am from Colombia."'},
+    {word:'speak',phonetic:'spiik',es:'hablar',example:'"I don\'t speak English well."'},
+    {word:'help',phonetic:'jelp',es:'ayudar',example:'"Can you help me?"'},
+    {word:'please',phonetic:'pliis',es:'por favor',example:'"Help me, please."'},
+   ],
+   mistakes:[
+    {wrong:'Am Carlos.',correct:'I am Carlos.',note:'El sujeto "I" nunca se omite.'},
+    {wrong:'I no speak English.',correct:"I don't speak English.",note:'"Don\'t" = do not. Es la negación correcta.'},
+    {wrong:'Can you help I?',correct:'Can you help me?',note:'"Me" es el pronombre objeto, no "I".'},
+   ],
+   cultural:'En países angloparlantes presentarse con el primer nombre es lo normal. "Nice to meet you" es la respuesta estándar cuando alguien se presenta. Un apretón de manos firme y contacto visual son señales de confianza.',
+   review:[
+    {q:'Completa: "___ name is Carlos."',opts:['My','I','Me'],ans:0},
+    {q:'Completa: "I ___ from Colombia."',opts:['am','is','are'],ans:0},
+    {q:'¿Cuál es la forma correcta?',opts:["I don't speak English","I no speak English","I not speak English"],ans:0},
+   ],
+  },
+  2:{
+   grammarDetail:'"Can" es un verbo modal que expresa capacidad o permiso. La gran ventaja: NO cambia según la persona — I can, You can, He can, She can. Para pedir algo con educación usa "Can you + verbo base?" — es la estructura perfecta para cualquier situación de ayuda.',
+   conjugation:[
+    {pronoun:'I / You / He / She',form:'can + verbo',example:'"I can help you." — Puedo ayudarte.'},
+    {pronoun:'Negación',form:"can't / cannot",example:'"I can\'t understand." — No puedo entender.'},
+    {pronoun:'Pregunta',form:'Can + sujeto + verbo?',example:'"Can you repeat?" — ¿Puedes repetir?'},
+    {pronoun:'Respuesta',form:'Yes, I can. / No, I can\'t.',example:'"Can you help?" "Yes, I can."'},
+   ],
+   phonetics:[
+    {word:'understand',phonetic:'anderstand',es:'entender',example:'"I don\'t understand."'},
+    {word:'repeat',phonetic:'ripít',es:'repetir',example:'"Can you repeat, please?"'},
+    {word:'slowly',phonetic:'slóuli',es:'despacio',example:'"Please speak slowly."'},
+    {word:'help',phonetic:'jelp',es:'ayuda / ayudar',example:'"Can you help me?"'},
+    {word:'please',phonetic:'pliis',es:'por favor',example:'"Repeat, please."'},
+   ],
+   mistakes:[
+    {wrong:'Can you repeat me?',correct:'Can you repeat that?',note:'"Repeat me" no existe en inglés. Usa "repeat that" o "repeat, please".'},
+    {wrong:'Speak slowly.',correct:'Please speak slowly.',note:'"Please" es esencial para sonar educado, no una orden.'},
+    {wrong:'I can\'t understanding.',correct:"I can't understand.",note:'Después de "can\'t" el verbo va en forma base, sin "-ing".'},
+   ],
+   cultural:'"Please" al final de una petición es fundamental en inglés. Sin él puede sonar como una orden. En UK se usa aún más que en EE.UU. También es normal decir "Excuse me" antes de pedir ayuda a un desconocido.',
+   review:[
+    {q:'¿Cómo se dice "No puedo entender"?',opts:["I can't understand","I no can understand","I can not understanding"],ans:0},
+    {q:'Completa: "Can you ___ slowly?"',opts:['speak','speaks','speaking'],ans:0},
+    {q:'¿Cuál suena más educado?',opts:['Repeat!','Can you repeat, please?','You repeat.'],ans:1},
+   ],
+  },
+  3:{
+   grammarDetail:'"Need" expresa necesidad. Se usa "I need + sustantivo" o "I need to + verbo base". Para el precio la pregunta correcta es "How much IS it?" — el verbo es "is" porque preguntas por el valor de algo. Nunca uses "How much cost?" — "cost" es verbo, no va con "how much" solo.',
+   conjugation:[
+    {pronoun:'I / You / We / They',form:'need',example:'"I need a taxi." — Necesito un taxi.'},
+    {pronoun:'He / She / It',form:'needs',example:'"She needs help." — Ella necesita ayuda.'},
+    {pronoun:'I need to',form:'+ verbo base',example:'"I need to go." — Necesito ir.'},
+    {pronoun:'Pregunta',form:'Do you need...?',example:'"Do you need help?" — ¿Necesitas ayuda?'},
+   ],
+   phonetics:[
+    {word:'need',phonetic:'niid',es:'necesitar',example:'"I need a taxi."'},
+    {word:'address',phonetic:'ádres',es:'dirección',example:'"Can you take me to this address?"'},
+    {word:'take',phonetic:'teik',es:'llevar / tomar',example:'"Can you take me to my hotel?"'},
+    {word:'how much',phonetic:'jau mach',es:'cuánto cuesta',example:'"How much is it?"'},
+    {word:'hotel',phonetic:'jotél',es:'hotel',example:'"I need to go to my hotel."'},
+   ],
+   mistakes:[
+    {wrong:'How much cost?',correct:'How much is it?',note:'"Cost" es verbo. La pregunta correcta usa el verbo "is".'},
+    {wrong:'I want taxi.',correct:'I need a taxi, please.',note:'Siempre usa el artículo "a" antes de sustantivos singulares.'},
+    {wrong:'Take me hotel.',correct:'Can you take me to my hotel?',note:'Faltan la preposición "to" y el posesivo "my".'},
+   ],
+   cultural:'En EE.UU. los taxis tienen taxímetro. En UK son famosos los "black cabs". Con Uber o Lyft el precio es automático. Siempre confirma el precio antes de subir a un taxi no oficial. "Is the meter on?" (¿Está el taxímetro encendido?) es una frase útil.',
+   review:[
+    {q:'¿Cómo preguntas el precio?',opts:['How much cost?','How much is it?','What is the cost?'],ans:1},
+    {q:'Completa: "I need ___ go to my hotel."',opts:['to','a','of'],ans:0},
+    {q:'¿Cuál es correcta?',opts:['I need taxi','I need a taxi, please','I want taxi'],ans:1},
+   ],
+  },
+  4:{
+   grammarDetail:'El artículo "a" (o "an" antes de vocal) es OBLIGATORIO en inglés antes de sustantivos singulares. "I have reservation" es incorrecto — debe ser "I have A reservation". El verbo "have/has" expresa posesión. Para documentos, reservas y objetos físicos siempre usa: I have + artículo + sustantivo.',
+   conjugation:[
+    {pronoun:'I / You / We / They',form:'have',example:'"I have a reservation." — Tengo una reservación.'},
+    {pronoun:'He / She / It',form:'has',example:'"She has the key." — Ella tiene la llave.'},
+    {pronoun:'Negación',form:"don't have / doesn't have",example:'"I don\'t have my passport." — No tengo mi pasaporte.'},
+    {pronoun:'Pregunta',form:'Do you have...?',example:'"Do you have a room?" — ¿Tiene una habitación?'},
+   ],
+   phonetics:[
+    {word:'reservation',phonetic:'reservéishon',es:'reservación',example:'"I have a reservation."'},
+    {word:'passport',phonetic:'páspor',es:'pasaporte',example:'"Here is my passport."'},
+    {word:'check in',phonetic:'chek-in',es:'registrarse',example:'"Can I check in, please?"'},
+    {word:'room',phonetic:'rum',es:'habitación',example:'"My room is ready?"'},
+    {word:'here',phonetic:'jir',es:'aquí',example:'"Here is my passport."'},
+   ],
+   mistakes:[
+    {wrong:'I have reservation.',correct:'I have a reservation.',note:'"A" es obligatorio antes de sustantivos singulares.'},
+    {wrong:'Here my passport.',correct:'Here is my passport.',note:'El verbo "is" no se omite en inglés.'},
+    {wrong:'I want check in.',correct:'Can I check in, please?',note:'Usa "can" para pedir permiso educadamente.'},
+   ],
+   cultural:'En hoteles de EE.UU. el check-in estándar es a las 3pm y el check-out a las 11am. Puedes pedir "early check-in" o "late check-out" — a veces es gratis si hay disponibilidad. "Do you have any upgrades available?" puede conseguirte una mejor habitación.',
+   review:[
+    {q:'¿Cuál es correcta?',opts:['I have reservation','I have a reservation','I has a reservation'],ans:1},
+    {q:'Completa: "___ is my passport."',opts:['Here','There','This'],ans:0},
+    {q:'"Have" en 3ra persona (He/She) se convierte en:',opts:['have','has','haves'],ans:1},
+   ],
+  },
+  5:{
+   grammarDetail:'"Would like" es la forma educada y formal de pedir en inglés. Es más cortés que "I want" — en restaurantes, hoteles y contextos de servicio siempre usa "I would like". La contracción es "I\'d like". "Can I have + sustantivo?" también es correcto y muy usado en UK.',
+   conjugation:[
+    {pronoun:'I would like',form:'+ sustantivo',example:'"I would like a coffee." — Quisiera un café.'},
+    {pronoun:'I\'d like',form:'+ sustantivo (contracción)',example:'"I\'d like chicken, please." — Quisiera pollo.'},
+    {pronoun:'Can I have',form:'+ sustantivo + please?',example:'"Can I have the menu, please?"'},
+    {pronoun:'I want',form:'+ sustantivo (informal)',example:'"I want water." — Quiero agua. (Menos formal)'},
+   ],
+   phonetics:[
+    {word:'coffee',phonetic:'cófi',es:'café',example:'"Can I have a coffee?"'},
+    {word:'chicken',phonetic:'chíken',es:'pollo',example:'"I would like chicken."'},
+    {word:'bill',phonetic:'bil',es:'la cuenta',example:'"The bill, please."'},
+    {word:'menu',phonetic:'méniu',es:'menú',example:'"Can I have the menu?"'},
+    {word:'ready',phonetic:'rédi',es:'listo',example:'"I\'m ready to order."'},
+   ],
+   mistakes:[
+    {wrong:'Give me a coffee.',correct:'Can I have a coffee, please?',note:'"Give me" suena como una orden. Usa "Can I have" para ser educado.'},
+    {wrong:'I want chicken.',correct:'I would like chicken, please.',note:'"Would like" suena más educado y profesional que "want".'},
+    {wrong:'Check please.',correct:'The bill, please.',note:'En UK y muchos países usa "bill". En EE.UU. también se dice "check".'},
+   ],
+   cultural:'En EE.UU. las propinas (tips) son esperadas: 15-18% normal, 20% excelente servicio. En UK el servicio a veces está incluido (service charge). "Is service included?" — ¿Está incluido el servicio? En Australia y Nueva Zelanda las propinas son opcionales.',
+   review:[
+    {q:'¿Cuál suena más educado en un restaurante?',opts:['I want coffee','Give me coffee','I would like a coffee, please'],ans:2},
+    {q:'¿Cómo pides la cuenta en UK?',opts:['Give me the bill','The bill, please','I want to pay'],ans:1},
+    {q:'"I\'d like" es la contracción de:',opts:['I did like','I would like','I could like'],ans:1},
+   ],
+  },
+  6:{
+   grammarDetail:'"There is" (singular) y "There are" (plural) se usan para indicar existencia o reportar situaciones. "Doesn\'t work" usa "doesn\'t" porque el sujeto es He/She/It (3ra persona singular). Para I/You/We/They la negación es "don\'t". Esta distinción es uno de los errores más comunes de hispanohablantes.',
+   conjugation:[
+    {pronoun:'There IS',form:'+ singular',example:'"There is a problem." — Hay un problema.'},
+    {pronoun:'There ARE',form:'+ plural',example:'"There are no towels." — No hay toallas.'},
+    {pronoun:'I / You / We / They',form:"don't + verbo",example:'"I don\'t understand." — No entiendo.'},
+    {pronoun:'He / She / It',form:"doesn't + verbo",example:'"The key doesn\'t work." — La llave no funciona.'},
+   ],
+   phonetics:[
+    {word:'problem',phonetic:'próblem',es:'problema',example:'"There is a problem."'},
+    {word:'key',phonetic:'kii',es:'llave',example:'"My key doesn\'t work."'},
+    {word:'room',phonetic:'rum',es:'habitación',example:'"My room key."'},
+    {word:'work',phonetic:'uork',es:'funcionar',example:'"It doesn\'t work."'},
+    {word:'manager',phonetic:'mánayer',es:'gerente',example:'"Can I speak with the manager?"'},
+   ],
+   mistakes:[
+    {wrong:'Key no work.',correct:"My key doesn't work.",note:'En inglés siempre necesitas sujeto + verbo auxiliar para la negación.'},
+    {wrong:'I have problem.',correct:'There is a problem. / I have a problem.',note:'El artículo "a" es obligatorio antes de "problem".'},
+    {wrong:'The air conditioning not work.',correct:"The air conditioning doesn't work.",note:'La negación de 3ra persona usa "doesn\'t", no "not".'},
+   ],
+   cultural:'En hoteles angloparlantes puedes quejarte educadamente con "I\'m afraid there\'s a problem with my room." El tono educado siempre genera mejor respuesta. Si el problema es serio, pide hablar con el "manager" (gerente).',
+   review:[
+    {q:'Completa: "My key ___ work."',opts:["don't","doesn't","no"],ans:1},
+    {q:'¿Cómo reportas un problema?',opts:['I have problem','There is a problem','Problem here'],ans:1},
+    {q:'"There ___" para plural (muchos problemas):',opts:['is','are','be'],ans:1},
+   ],
+  },
+  7:{
+   grammarDetail:'La fluidez en inglés viene de combinar estructuras cortas con confianza. No necesitas frases perfectas — necesitas comunicar claramente. Recuerda las 6 estructuras de la Temporada 1: To be (I am) · Can (Can you?) · Need (I need) · Have (I have) · Would like (I\'d like) · There is (There is a problem).',
+   conjugation:[
+    {pronoun:'Presentarte',form:'I am / I\'m',example:'"Hi, I\'m Carlos from Colombia."'},
+    {pronoun:'Pedir',form:'Can you...?',example:'"Can you help me, please?"'},
+    {pronoun:'Necesitar',form:'I need',example:'"I need a taxi to my hotel."'},
+    {pronoun:'Tener',form:'I have',example:'"I have a reservation."'},
+    {pronoun:'Pedir con educación',form:'I\'d like',example:'"I\'d like chicken, please."'},
+    {pronoun:'Reportar',form:'There is',example:'"There is a problem."'},
+   ],
+   phonetics:[
+    {word:'traveler',phonetic:'tráveler',es:'viajero',example:'"I am a traveler."'},
+    {word:'tourist',phonetic:'túrist',es:'turista',example:'"I\'m not a tourist."'},
+    {word:'reservation',phonetic:'reservéishon',es:'reservación',example:'"I have a reservation."'},
+    {word:'problem',phonetic:'próblem',es:'problema',example:'"There is a problem."'},
+    {word:'help',phonetic:'jelp',es:'ayuda',example:'"Can you help me?"'},
+   ],
+   mistakes:[
+    {wrong:'I no understand.',correct:"I don't understand.",note:'"Don\'t" es la negación correcta, no "no" solo.'},
+    {wrong:'Repeat please.',correct:'Can you repeat, please?',note:'Usa "Can you" para sonar educado, no solo el verbo.'},
+    {wrong:'My name Carlos.',correct:'My name IS Carlos.',note:'El verbo "is" nunca se omite.'},
+   ],
+   cultural:'Los angloparlantes valoran la directness — hablar directo y claro. Frases cortas y precisas son más efectivas que frases largas e inseguras. Si no entiendes algo, siempre di "Can you repeat that, please?" — nunca finjas entender.',
+   review:[
+    {q:'¿Cuál de estas estructuras expresa necesidad?',opts:['I have','I need','I am'],ans:1},
+    {q:'Para pedir algo educadamente usas:',opts:['Give me','I want','Can I have / I\'d like'],ans:2},
+    {q:'¿Cómo reportas que algo no funciona?',opts:["It no work","It doesn't work","Not working it"],ans:1},
+   ],
+  },
+ },
+ s2:{
+  1:{
+   grammarDetail:'Las contracciones son la forma natural del inglés hablado y profesional. "I am" = "I\'m", "You are" = "You\'re", "It is" = "It\'s". En entornos laborales, las contracciones suenan más natural y fluido. Solo los documentos formales escritos evitan las contracciones.',
+   conjugation:[
+    {pronoun:'I am',form:"I'm",example:'"I\'m Carlos, the new employee."'},
+    {pronoun:'You are',form:"You're",example:'"You\'re the manager, right?"'},
+    {pronoun:'He/She is',form:"He's / She's",example:'"She\'s the HR manager."'},
+    {pronoun:'We are',form:"We're",example:'"We\'re the new team."'},
+    {pronoun:'They are',form:"They're",example:'"They\'re my colleagues."'},
+   ],
+   phonetics:[
+    {word:'employee',phonetic:'employi',es:'empleado',example:'"I\'m the new employee."'},
+    {word:'ready',phonetic:'rédi',es:'listo',example:'"I\'m ready to start."'},
+    {word:'morning',phonetic:'mórning',es:'mañana (tiempo)',example:'"Good morning!"'},
+    {word:'should',phonetic:'shud',es:'debería / debo',example:'"Where should I go?"'},
+    {word:'welcome',phonetic:'uélcom',es:'bienvenido',example:'"Welcome to the company!"'},
+   ],
+   mistakes:[
+    {wrong:'I am new.',correct:"I'm the new employee.",note:'Especifica tu rol — "new" solo es muy vago en contexto laboral.'},
+    {wrong:'Where I go?',correct:'Where should I go?',note:'"Should" expresa deber/recomendación. Las preguntas necesitan estructura auxiliar.'},
+    {wrong:'Nice meet you.',correct:'Nice to meet you.',note:'"To" es obligatorio — "nice to meet you" es una expresión fija.'},
+   ],
+   cultural:'En empresas anglosajonas, el primer día incluye un "onboarding" o inducción. Es completamente normal hacer muchas preguntas — demuestra interés y proactividad. El "small talk" (charla informal) con colegas es parte de la cultura laboral.',
+   review:[
+    {q:'"I am" en contracción es:',opts:["I'm","Im","I'am"],ans:0},
+    {q:'Completa: "Nice ___ meet you."',opts:['to','for','of'],ans:0},
+    {q:'¿Cómo preguntas a dónde ir?',opts:['Where I go?','Where should I go?','Where to I go?'],ans:1},
+   ],
+  },
+  2:{
+   grammarDetail:'"Just" + pasado simple indica que algo ocurrió muy recientemente — en las últimas horas o incluso minutos. "I just started" es más natural y expresivo que "I started today". "Can you show me around?" es una expresión idiomática fija que significa mostrar el lugar — no se traduce palabra por palabra.',
+   conjugation:[
+    {pronoun:'I just',form:'+ pasado simple',example:'"I just started today." — Acabo de empezar.'},
+    {pronoun:'I just',form:'+ pasado simple',example:'"I just arrived." — Acabo de llegar.'},
+    {pronoun:'I just',form:'+ pasado simple',example:'"I just finished." — Acabo de terminar.'},
+    {pronoun:'Can you show me around?',form:'Expresión fija',example:'"Can you show me around the office?"'},
+   ],
+   phonetics:[
+    {word:'just',phonetic:'yast',es:'acabo de / recién',example:'"I just started."'},
+    {word:'around',phonetic:'eráund',es:'por / alrededor',example:'"Show me around."'},
+    {word:'role',phonetic:'roul',es:'cargo / rol',example:'"What\'s your role here?"'},
+    {word:'colleague',phonetic:'kólig',es:'colega',example:'"My colleagues are great."'},
+    {word:'team',phonetic:'tiim',es:'equipo',example:'"This is my team."'},
+   ],
+   mistakes:[
+    {wrong:'I start today.',correct:'I just started today.',note:'"Just" + pasado comunica acción muy reciente con más naturalidad.'},
+    {wrong:'Show me the office.',correct:'Can you show me around?',note:'"Show me around" es la expresión idiomática correcta para pedir un recorrido.'},
+    {wrong:'What you do here?',correct:'What do you do here?',note:'Las preguntas en inglés necesitan el auxiliar "do" — nunca omitirlo.'},
+   ],
+   cultural:'El "small talk" es fundamental en oficinas anglosajonas. Preguntar "How are you?" o "How was your weekend?" es la forma de conectar con colegas. Hablar de trabajo, clima, deportes o viajes son temas seguros. Evita política o religión.',
+   review:[
+    {q:'"I just started" significa:',opts:['Quiero empezar','Acabo de empezar','Empecé hace mucho'],ans:1},
+    {q:'¿Cómo pides un recorrido de la oficina?',opts:['Show the office','Can you show me around?','Take me around'],ans:1},
+    {q:'¿Qué auxiliar va en "What ___ you do here?"',opts:['are','do','is'],ans:1},
+   ],
+  },
+  3:{
+   grammarDetail:'"Going well" es una expresión fija del inglés laboral — significa que algo avanza positivamente. El presente continuo (is/are + verbo-ing) describe situaciones en progreso. "I agree with" SIEMPRE lleva "with" antes del objeto. Sin "with" la frase queda incompleta.',
+   conjugation:[
+    {pronoun:'is going',form:'+ bien/mal',example:'"The project is going well." — El proyecto va bien.'},
+    {pronoun:'are going',form:'+ bien/mal',example:'"Things are going well." — Las cosas van bien.'},
+    {pronoun:'I agree with',form:'+ objeto',example:'"I agree with you / that / the plan."'},
+    {pronoun:'I disagree with',form:'+ objeto',example:'"I disagree with that approach."'},
+   ],
+   phonetics:[
+    {word:'project',phonetic:'próyect',es:'proyecto',example:'"The project is going well."'},
+    {word:'question',phonetic:'cuéshon',es:'pregunta',example:'"I have a question."'},
+    {word:'agree',phonetic:'agrí',es:'estar de acuerdo',example:'"I agree with that."'},
+    {word:'update',phonetic:'ápdeit',es:'actualización',example:'"Can you give us an update?"'},
+    {word:'meeting',phonetic:'míiting',es:'reunión',example:'"The meeting starts at 9."'},
+   ],
+   mistakes:[
+    {wrong:'I have question.',correct:'I have a question.',note:'El artículo "a" es siempre obligatorio antes de sustantivos singulares.'},
+    {wrong:'I agree.',correct:'I agree with that.',note:'"Agree" necesita "with" + objeto para completar la idea.'},
+    {wrong:'The project go well.',correct:'The project is going well.',note:'Usa el presente continuo "is going" para describir el progreso actual.'},
+   ],
+   cultural:'En reuniones en inglés es normal y esperado pedir aclaración: "Could you clarify that?" o "Can you repeat that, please?" Es preferible preguntar que fingir entender. Tomar notas (taking notes) en reuniones demuestra profesionalismo.',
+   review:[
+    {q:'¿Cómo dices que el proyecto avanza positivamente?',opts:['The project goes good','The project is going well','The project go well'],ans:1},
+    {q:'Completa: "I agree ___ your proposal."',opts:['to','with','on'],ans:1},
+    {q:'"I have ___ question." ¿Qué artículo va aquí?',opts:['a','the','—'],ans:0},
+   ],
+  },
+  4:{
+   grammarDetail:'"I don\'t know how to + verbo" es la estructura correcta para expresar que no sabes hacer algo. "Don\'t" es la negación para I/You/We/They. La estructura "how to + verbo infinitivo" es fija — siempre va en forma base: "how to DO", "how to SEND", "how to USE". Nunca "how to doing" o "how to does".',
+   conjugation:[
+    {pronoun:'I / You / We / They',form:"don't know",example:'"I don\'t know how to do this."'},
+    {pronoun:'He / She / It',form:"doesn't know",example:'"She doesn\'t know how to use it."'},
+    {pronoun:'How to',form:'+ verbo base',example:'"how to send / do / use / find"'},
+    {pronoun:'Can you show me',form:'how to + verbo?',example:'"Can you show me how to submit this?"'},
+   ],
+   phonetics:[
+    {word:'know',phonetic:'nou',es:'saber / conocer',example:'"I don\'t know."'},
+    {word:'show',phonetic:'shou',es:'mostrar',example:'"Can you show me?"'},
+    {word:'understand',phonetic:'anderstand',es:'entender',example:'"I understand now."'},
+    {word:'submit',phonetic:'sabmít',es:'enviar / entregar',example:'"How do I submit this?"'},
+    {word:'software',phonetic:'sóftuer',es:'software',example:'"I don\'t know this software."'},
+   ],
+   mistakes:[
+    {wrong:"I no know.",correct:"I don't know how to do this.",note:'"Don\'t" es la negación correcta. "No" solo no funciona en inglés.'},
+    {wrong:'Show me how do this.',correct:'Can you show me how to do this?',note:'"How to + verbo base" es la estructura fija. No uses "how do".'},
+    {wrong:"I don't know doing this.",correct:"I don't know how to do this.",note:'Después de "how to" el verbo va en infinitivo, no en gerundio (-ing).'},
+   ],
+   cultural:'En culturas anglosajonas, admitir que no sabes algo es señal de madurez profesional. "I\'m not sure, but I\'ll find out" (No estoy seguro, pero lo averiguaré) es una respuesta muy valorada. Pedir ayuda demuestra iniciativa, no debilidad.',
+   review:[
+    {q:'Completa: "I don\'t know how ___ do this."',opts:['to','for','of'],ans:0},
+    {q:'"Doesn\'t" se usa con:',opts:['I / You / We','He / She / It','Todos'],ans:1},
+    {q:'¿Cuál es correcta?',opts:["I no know","I don't know how to do this","I not knowing"],ans:1},
+   ],
+  },
+  5:{
+   grammarDetail:'"Will" es el auxiliar del futuro simple en inglés. Expresa promesas, compromisos y predicciones. "I will send it" = "Lo enviaré" — es una afirmación firme. La contracción "I\'ll" es muy común en conversación. En emails profesionales, "will" da seguridad al receptor.',
+   conjugation:[
+    {pronoun:'I will',form:"I'll + verbo base",example:'"I will send the report." / "I\'ll send it today."'},
+    {pronoun:'You will',form:"You'll + verbo base",example:'"You\'ll receive it by Friday."'},
+    {pronoun:'He/She will',form:"He'll/She'll + verbo base",example:'"She\'ll call you tomorrow."'},
+    {pronoun:'Negación',form:"won't (will not)",example:'"I won\'t be late." — No llegaré tarde.'},
+   ],
+   phonetics:[
+    {word:'send',phonetic:'send',es:'enviar',example:'"I will send it today."'},
+    {word:'report',phonetic:'ripórt',es:'informe',example:'"The report is ready."'},
+    {word:'regards',phonetic:'rigárds',es:'saludos (siempre plural)',example:'"Best regards."'},
+    {word:'available',phonetic:'avéilabol',es:'disponible',example:'"I\'m available tomorrow."'},
+    {word:'deadline',phonetic:'dédlain',es:'fecha límite',example:'"The deadline is Friday."'},
+   ],
+   mistakes:[
+    {wrong:'I send it today.',correct:'I will send it today.',note:'"Will" indica un compromiso futuro claro.'},
+    {wrong:'Best regard.',correct:'Best regards.',note:'"Regards" SIEMPRE en plural — error muy común en emails.'},
+    {wrong:'I am send the report.',correct:'I will send the report.',note:'Futuro = "will" + verbo base, no "am" + verbo.'},
+   ],
+   cultural:'Los emails profesionales en inglés siguen formato estándar: saludo (Hi Carlos / Dear Mr. Smith), cuerpo del mensaje, cierre (Best regards / Kind regards). "Kind regards" es más formal. "Cheers" se usa en UK para cierres informales.',
+   review:[
+    {q:'Completa: "I ___ send the report today."',opts:['will','am','have'],ans:0},
+    {q:'"Best ___" — ¿cuál es correcta?',opts:['Regard','Regards','Regarding'],ans:1},
+    {q:'"I\'ll" es la contracción de:',opts:['I did','I will','I could'],ans:1},
+   ],
+  },
+  6:{
+   grammarDetail:'"Can we + verbo?" es la forma educada de hacer sugerencias en grupo. "I\'m available + tiempo" es la expresión profesional para indicar disponibilidad. En inglés laboral "available" suena más formal que "free". "When are you free?" es casual; "When are you available?" es profesional.',
+   conjugation:[
+    {pronoun:'Can we',form:'+ verbo? (sugerencia)',example:'"Can we schedule a meeting?" — ¿Podemos agendar una reunión?'},
+    {pronoun:'I\'m available',form:'+ tiempo',example:'"I\'m available tomorrow at 10." — Estoy disponible mañana a las 10.'},
+    {pronoun:'I\'m free',form:'+ tiempo (informal)',example:'"I\'m free after 3pm." — Estoy libre después de las 3.'},
+    {pronoun:'When are you',form:'available / free?',example:'"When are you available this week?"'},
+   ],
+   phonetics:[
+    {word:'schedule',phonetic:'skéyul',es:'programar / agendar',example:'"Can we schedule a meeting?"'},
+    {word:'available',phonetic:'avéilabol',es:'disponible',example:'"I\'m available at 10."'},
+    {word:'concern',phonetic:'consérn',es:'preocupación',example:'"I have a concern."'},
+    {word:'deadline',phonetic:'dédlain',es:'fecha límite',example:'"The deadline is next week."'},
+    {word:'agenda',phonetic:'ayénda',es:'agenda de reunión',example:'"What\'s on the agenda?"'},
+   ],
+   mistakes:[
+    {wrong:'I am free tomorrow 10.',correct:"I'm available tomorrow at 10.",note:'"Available" es más profesional. "At" es la preposición para horas.'},
+    {wrong:'I have concern.',correct:'I have a concern.',note:'"A" es obligatorio antes de sustantivos singulares.'},
+    {wrong:'Can we to schedule?',correct:'Can we schedule?',note:'Después de "can" el verbo va en forma base SIN "to".'},
+   ],
+   cultural:'En empresas anglosajonas, las reuniones se agendan por calendario digital (Google Calendar, Outlook). Es normal enviar un "meeting invite" con agenda incluida. "Does 10am work for you?" es la forma más común de proponer un horario.',
+   review:[
+    {q:'¿Cuál suena más profesional?',opts:["I'm free","I'm available","I have time"],ans:1},
+    {q:'Completa: "I\'m available tomorrow ___ 10."',opts:['in','on','at'],ans:2},
+    {q:'Completa: "Can we ___ a meeting?"',opts:['to schedule','schedule','scheduling'],ans:1},
+   ],
+  },
+  7:{
+   grammarDetail:'El inglés profesional combina múltiples estructuras con naturalidad y confianza. No busques perfección — busca claridad. Las expresiones más poderosas del inglés de trabajo son: "I\'m available", "I will + compromiso", "The project is going well", "I have a question/concern", "I agree/disagree with".',
+   conjugation:[
+    {pronoun:'Estado actual',form:"I'm + adjetivo/gerundio",example:'"I\'m enjoying the team. / I\'m ready."'},
+    {pronoun:'Compromiso',form:'I will + verbo',example:'"I will send the report."'},
+    {pronoun:'Progreso',form:'is/are going well',example:'"The project is going well."'},
+    {pronoun:'Disponibilidad',form:"I'm available + cuando",example:'"I\'m available whenever you need."'},
+    {pronoun:'Pregunta profesional',form:'I have a question/concern',example:'"I have a question about the meeting."'},
+   ],
+   phonetics:[
+    {word:'enjoying',phonetic:'enyóing',es:'disfrutando',example:'"I\'m enjoying the work."'},
+    {word:'whenever',phonetic:'juenéver',es:'cuando sea',example:'"Whenever you need me."'},
+    {word:'contribute',phonetic:'contríbiut',es:'contribuir',example:'"I contributed to the project."'},
+    {word:'achieve',phonetic:'achíiv',es:'lograr',example:'"I achieved my goals."'},
+    {word:'improve',phonetic:'imprúuv',es:'mejorar',example:'"I improved the process."'},
+   ],
+   mistakes:[
+    {wrong:'I enjoying the team.',correct:"I'm enjoying the team.",note:'"I\'m" (I am) es necesario antes del gerundio (-ing).'},
+    {wrong:'I available whenever.',correct:"I'm available whenever you need.",note:'"I\'m" no se omite. "Whenever" necesita su complemento.'},
+    {wrong:'I have question about.',correct:'I have a question about the meeting.',note:'"A" antes de question y especifica sobre qué es la pregunta.'},
+   ],
+   cultural:'En las evaluaciones de desempeño (performance reviews) en inglés es esperado que menciones tus propios logros: "I contributed to...", "I improved...", "I achieved...". La modestia excesiva puede ser malinterpretada. Habla de tus resultados con confianza.',
+   review:[
+    {q:'Completa: "I ___ enjoying the team."',opts:["'m","have","do"],ans:0},
+    {q:'¿Cuál expresa un compromiso futuro?',opts:['I send the report','I will send the report','I sending the report'],ans:1},
+    {q:'Para mencionar un logro en inglés dices:',opts:['I did the project','I contributed to the project','I make the project'],ans:1},
+   ],
+  },
+ },
 };
 
 const SEASONS = [
@@ -1956,7 +2421,7 @@ function renderProgress() {
         : '';
 
     document.getElementById('progress-body').innerHTML = `
-    <div class="pstats">
+    <div class="pstats" style="margin:16px 16px 0;">
         <div class="pstat">
             <span class="pstat-val">🔥 ${S.streak}</span>
             <div class="pstat-lbl">días de racha</div>
@@ -1970,14 +2435,112 @@ function renderProgress() {
             <div class="pstat-lbl">frases aprendidas</div>
         </div>
     </div>
-    <div class="skills-section">
+    <div class="skills-section" style="padding:0 16px;">
         ${noSkills}
         <h3>✈️ Temporada 1 — Viaje</h3>
         ${s1Html || '<p style="font-size:13px;color:var(--text-muted);">Sin completar aún</p>'}
         <h3 style="margin-top:10px;">💼 Temporada 2 — Oficina</h3>
         ${s2Html}
     </div>
-    <button class="reset-btn" onclick="resetState()">↺ Reiniciar progreso (demo)</button>`;
+    <div style="padding:0 16px 16px;">
+        <button class="reset-btn" onclick="resetState()">↺ Reiniciar progreso (demo)</button>
+    </div>`;
+
+    renderGuide();
+    // default tab = stats
+    document.getElementById('tab-stats').classList.add('active');
+    document.getElementById('tab-guide').classList.remove('active');
+    document.getElementById('progress-body').style.display = 'block';
+    document.getElementById('guide-body').style.display = 'none';
+}
+
+function switchProgressTab(tab) {
+    document.getElementById('tab-stats').classList.toggle('active', tab === 'stats');
+    document.getElementById('tab-guide').classList.toggle('active', tab === 'guide');
+    document.getElementById('progress-body').style.display = tab === 'stats' ? 'block' : 'none';
+    document.getElementById('guide-body').style.display    = tab === 'guide'  ? 'flex'  : 'none';
+}
+
+function renderGuide() {
+    const seasons = [
+        { key:'s1', label:'✈️ Temporada 1 — Viaje', missions: MISSIONS, done: S.completedDays },
+        { key:'s2', label:'💼 Temporada 2 — Oficina', missions: MISSIONS_S2, done: S.completedDays2 },
+    ];
+
+    let html = '';
+    for (const season of seasons) {
+        html += `<h3 style="font-size:14px;font-weight:800;color:var(--primary);margin-bottom:4px;">${season.label}</h3>`;
+        for (const m of season.missions) {
+            const g = GUIDE[season.key] && GUIDE[season.key][m.day];
+            const unlocked = season.done.includes(m.day);
+            if (!unlocked) {
+                html += `<div class="lesson-card" style="opacity:.5;">
+                    <div class="lesson-header">
+                        <span style="font-size:22px;">${m.icon || m.skillIcon}</span>
+                        <div><strong>Día ${m.day}: ${m.title}</strong><br><span style="font-size:12px;color:var(--text-muted);">🔒 Completa la misión para desbloquear</span></div>
+                    </div>
+                </div>`;
+                continue;
+            }
+            if (!g) continue;
+
+            // conjugation table rows
+            const conjRows = (g.conjugation || []).map(r =>
+                `<tr><td>${r.pronoun}</td><td><strong>${r.form}</strong></td><td style="color:var(--text-muted);font-size:11px;">${r.example}</td></tr>`
+            ).join('');
+
+            // phonetics grid
+            const phonCards = (g.phonetics || []).map(p =>
+                `<div class="phonetic-card"><div style="font-size:16px;font-weight:700;">${p.word}</div><div style="font-size:13px;color:var(--accent);">[${p.phonetic}]</div><div style="font-size:11px;color:var(--text-muted);">${p.es}</div><div style="font-size:11px;font-style:italic;margin-top:4px;">"${p.example}"</div></div>`
+            ).join('');
+
+            // common mistakes
+            const mistakes = (g.mistakes || []).map(e =>
+                `<li><span style="color:#e53e3e;">✗ ${e.wrong}</span> → <span style="color:var(--success);">✓ ${e.correct}</span><br><span style="font-size:11px;color:var(--text-muted);">${e.note}</span></li>`
+            ).join('');
+
+            // review options (interactive)
+            const reviewItems = (g.review || []).map((rv, qi) => {
+                const opts = rv.opts.map((o, oi) =>
+                    `<div class="review-option" onclick="checkReview(this,${oi},${rv.ans})">${o}</div>`
+                ).join('');
+                return `<div style="margin-bottom:10px;"><p style="font-size:13px;font-weight:600;margin-bottom:6px;">${rv.q}</p><div style="display:flex;flex-wrap:wrap;gap:6px;">${opts}</div></div>`;
+            }).join('');
+
+            html += `<div class="lesson-card">
+                <div class="lesson-header" onclick="this.nextElementSibling.classList.toggle('open')">
+                    <span style="font-size:22px;">${m.icon || m.skillIcon}</span>
+                    <div style="flex:1;">
+                        <strong style="font-size:14px;">Día ${m.day}: ${m.title}</strong><br>
+                        <span style="font-size:11px;color:var(--text-muted);">Toca para ver la guía completa ▼</span>
+                    </div>
+                    <span style="color:var(--success);font-size:18px;">✓</span>
+                </div>
+                <div class="lesson-body">
+                    <div class="grammar-box">
+                        <h4>📚 Gramática</h4>
+                        <p style="font-size:13px;line-height:1.6;">${g.grammarDetail}</p>
+                        ${conjRows ? `<table class="conjugation-table"><thead><tr><th>Pronombre</th><th>Forma</th><th>Ejemplo</th></tr></thead><tbody>${conjRows}</tbody></table>` : ''}
+                    </div>
+                    ${phonCards ? `<div><h4 style="font-size:13px;font-weight:700;margin-bottom:8px;">🔊 Pronunciación clave</h4><div class="phonetics-grid">${phonCards}</div></div>` : ''}
+                    ${mistakes ? `<div class="mistakes-list"><h4>⚠️ Errores comunes</h4><ul>${mistakes}</ul></div>` : ''}
+                    ${g.cultural ? `<div class="cultural-box"><h4>🌍 Nota cultural</h4><p style="font-size:13px;line-height:1.6;">${g.cultural}</p></div>` : ''}
+                    ${reviewItems ? `<div><h4 style="font-size:13px;font-weight:700;margin-bottom:8px;">✏️ Repaso rápido</h4>${reviewItems}</div>` : ''}
+                </div>
+            </div>`;
+        }
+    }
+
+    document.getElementById('guide-body').innerHTML = html;
+}
+
+function checkReview(el, chosen, correct) {
+    const parent = el.parentElement;
+    // prevent double-click
+    if (parent.querySelector('.correct')) return;
+    [...parent.children].forEach((opt, i) => {
+        opt.classList.add(i === correct ? 'correct' : (i === chosen ? 'wrong' : ''));
+    });
 }
 
 // ════════════════════════════════════════════════
