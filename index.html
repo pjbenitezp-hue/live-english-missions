@@ -161,14 +161,40 @@
         .d-en { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; }
         .d-es { font-size:12px; color:var(--text-muted); }
         .phrases-section h3 { font-size:13px; font-weight:700; color:var(--text); margin-bottom:10px; }
-        .phrase-card { background:var(--card); border-radius:14px; padding:14px; margin-bottom:8px; border:2px solid var(--border); cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:space-between; gap:12px; box-shadow:0 1px 6px rgba(0,0,0,.04); }
+        .phrase-card { background:var(--card); border-radius:14px; padding:14px; margin-bottom:8px; border:2px solid var(--border); transition:all .2s; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; box-shadow:0 1px 6px rgba(0,0,0,.04); }
         .phrase-card.active { border-color:var(--accent); background:#FFF8F5; }
-        .phrase-card.done { border-color:var(--success); background:#F0FDF9; }
+        .phrase-card.done { border-color:var(--success); background:#F0FDF9; cursor:pointer; }
+        .phrase-card.locked { opacity:.4; pointer-events:none; }
         .phrase-en { font-size:14px; font-weight:600; color:var(--text); }
         .phrase-es { font-size:12px; color:var(--text-muted); margin-top:2px; }
-        .phrase-btn { width:36px; height:36px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; transition:all .2s; }
+        .phrase-ph { font-size:11px; color:var(--accent); font-weight:700; margin-top:5px; letter-spacing:.4px; font-family:'Courier New',monospace; line-height:1.6; }
+        .phrase-btn { width:36px; height:36px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; transition:all .2s; cursor:pointer; border:none; }
         .phrase-card.active .phrase-btn { background:var(--accent); }
         .phrase-card.done .phrase-btn { background:var(--success); }
+        /* Validate area */
+        .phrase-validate-area { margin-top:12px; border-top:1px solid var(--border); padding-top:12px; display:flex; flex-direction:column; gap:8px; }
+        .phrase-validate-label { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.6px; }
+        .phrase-type-input { border:1.5px solid var(--border); border-radius:10px; padding:10px 12px; font-size:14px; font-family:inherit; outline:none; width:100%; color:var(--text); background:var(--bg); transition:border-color .2s; }
+        .phrase-type-input:focus { border-color:var(--primary-light); }
+        .phrase-type-input.v-ok  { border-color:var(--success) !important; background:rgba(0,200,150,.05); }
+        .phrase-type-input.v-err { border-color:#e53e3e !important; background:rgba(229,62,62,.05); }
+        .phrase-verify-row { display:flex; gap:8px; }
+        .phrase-verify-btn { background:var(--primary); color:white; border:none; border-radius:10px; padding:10px 20px; font-size:13px; font-weight:700; cursor:pointer; flex-shrink:0; }
+        .phrase-feedback { font-size:12px; border-radius:8px; padding:8px 12px; line-height:1.6; }
+        .phrase-feedback.ok  { background:rgba(0,200,150,.1); color:#276749; }
+        .phrase-feedback.err { background:rgba(229,62,62,.06); color:#c53030; }
+        .phrase-continue-btn { background:rgba(30,58,110,.08); color:var(--primary); border:none; border-radius:8px; padding:7px 14px; font-size:12px; font-weight:700; cursor:pointer; margin-top:6px; }
+        /* Briefing card */
+        .briefing-card { background:linear-gradient(135deg,rgba(30,58,110,.04),rgba(45,90,160,.07)); border-radius:16px; border:1px solid rgba(30,58,110,.12); margin-bottom:14px; overflow:hidden; }
+        .briefing-header { padding:14px 16px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+        .briefing-header h3 { font-size:14px; font-weight:800; color:var(--primary); }
+        .brief-toggle { transition:transform .25s; font-size:14px; color:var(--text-muted); }
+        .brief-toggle.open { transform:rotate(180deg); }
+        .briefing-body { padding:0 16px 14px; display:none; }
+        .briefing-body.open { display:block; }
+        .briefing-phrase-preview { font-size:13px; color:var(--text); padding:6px 0; border-bottom:1px dashed var(--border); display:flex; flex-direction:column; gap:2px; }
+        .briefing-phrase-preview:last-child { border-bottom:none; }
+        .briefing-phrase-preview .bph { font-size:10px; color:var(--accent); font-family:'Courier New',monospace; font-weight:700; }
         .action-buttons { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
         .action-btn { border:none; border-radius:14px; padding:14px 8px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:6px; font-size:11px; font-weight:600; transition:all .15s; }
         .action-btn:active { transform:scale(.94); }
@@ -614,6 +640,7 @@
                 <div class="mission-progress-dots" id="m-dots"></div>
             </div>
             <div class="mission-body">
+                <div id="m-briefing"></div>
                 <div class="scene-card" id="m-scene-card">
                     <div class="scene-emoji" id="m-scene-emoji"></div>
                     <div class="scene-info">
@@ -824,6 +851,65 @@
 </div>
 
 <script>
+// ════════════════════════════════════════════════
+//  FONÉTICA — pronunciación aproximada en español
+// ════════════════════════════════════════════════
+const PH = {
+  'i':'AI','a':'A','hi':'JAI','hello':'JE-LOU','hey':'JEI','good':'GUD',
+  'morning':'MOR-NING','evening':'IV-NING','night':'NAIT','my':'MAI',
+  'name':'NEIM','is':'IZ','am':'AM','are':'AR','from':'FROM','can':'KAN',
+  'you':'IU','your':'IOR','help':'JELP','me':'MI','please':'PLIS',
+  "don't":'DONT',"doesn't":'DAZ-ENT','speak':'SPIK','english':'ING-GLISH',
+  'very':'VE-RI','well':'WEL','here':'JIR','for':'FOR','tourism':'TUR-IZ-EM',
+  'need':'NID','taxi':'TAK-SI','to':'TU','go':'GOU','hotel':'JO-TEL',
+  'take':'TEIK','this':'DIS','address':'A-DRES','how':'JAU','much':'MACH',
+  'have':'JAV','reservation':'RE-SER-VEI-SHEN','check':'CHEK','in':'IN',
+  'passport':'PAS-PORT','it':'IT','what':'WAT','time':'TAIM',
+  'delicious':'DE-LI-SHOS','bill':'BIL','thank':'ZANK','thanks':'ZANKS',
+  'there':'DER','problem':'PROB-LEM','room':'RUM','key':'KI','work':'WERK',
+  'send':'SEND','someone':'SAM-WAN','fix':'FIKS','great':'GREIT',
+  'day':'DEI','nice':'NAIS','meet':'MIT','ready':'RE-DI','start':'START',
+  'where':'WER','should':'SHUD','at':'AT','understand':'AN-DER-STAND',
+  'repeat':'RI-PIT','slowly':'SLOU-LI','baggage':'BA-GUICH','stop':'STOP',
+  'cost':'COST','checkout':'CHEK-AUT','coffee':'CO-FI','would':'WUD',
+  'like':'LAIK','chicken':'CHI-KEN','that':'DAT','with':'WID','we':'WI',
+  'schedule':'SKE-JUL','meeting':'MI-TING','available':'A-VEI-LA-BL',
+  'tomorrow':'TU-MO-ROU','concern':'KON-SERN','project':'PROJ-EKT',
+  'going':'GOU-ING','question':'KWES-CHEN','agree':'A-GRI','report':'RI-PORT',
+  'email':'I-MEIL','today':'TU-DEI','friday':'FRAI-DEI','regards':'RI-GARDS',
+  'best':'BEST','look':'LUK','forward':'FOR-WARD','hearing':'JIR-ING',
+  'grateful':'GREIT-FUL','opportunity':'OP-OR-TIU-NI-TI',
+  'enjoying':'EN-JOI-ING','team':'TIM','whenever':'WEN-E-VER',
+  'the':'DE','of':'OV','on':'ON','do':'DU','not':'NOT','no':'NOU',
+  'new':'NIU','just':'JAST','started':'STAR-TED','show':'SHOU',
+  'around':'A-RAUND','happy':'JA-PI','here':'JIR','about':'A-BAUT',
+  'next':'NEKST','month':'MANTH','will':'WIL','know':'NOU',
+  'come':'KAM','our':'AUR','some':'SAM','let':'LET','put':'PUT',
+  'calendar':'KA-LEN-DAR','appreciate':'A-PRI-SHEI-IT','any':'E-NI',
+  'also':'OL-SO','please':'PLIS','see':'SI','people':'PI-PL',
+  'speak':'SPIK','back':'BAK','come':'KAM','first':'FERST',
+  'right':'RAIT','number':'NAM-BER','floor':'FLOR',
+  'call':'KOL','thing':'ZING','think':'ZINK','want':'WANT',
+  'only':'ON-LI','been':'BIN','because':'BI-KOZ','when':'WEN',
+  'then':'DEN','way':'WEI','which':'WICH','them':'DEM',
+  'make':'MEIK','by':'BAI','come':'KAM','said':'SED',
+  'each':'ICH','she':'SHI','he':'JI','his':'JIZ','her':'JER',
+  'they':'DEI','its':'ITS','but':'BAT','out':'AUT','up':'AP',
+  'so':'SOU','if':'IF','about':'A-BAUT','who':'JU','all':'OL',
+  'one':'WAN','two':'TU','three':'ZRI','could':'KUD',
+  "i'm":'AIM',"you're":'IOR',"we're":'WIR',"it's":'ITS',
+  "can't":'KANT',"won't":'WONT',"i'll":'AIL',"i've":'AIV',
+};
+
+function wordPh(word) {
+  const clean = word.toLowerCase().replace(/[^a-z']/g, '');
+  return PH[clean] || word.toUpperCase().replace(/[^A-Z']/g,'');
+}
+
+function phrasePh(sentence) {
+  return sentence.split(/\s+/).filter(Boolean).map(wordPh).join(' · ');
+}
+
 // ════════════════════════════════════════════════
 //  DATA — 7 MISIONES
 // ════════════════════════════════════════════════
@@ -1959,6 +2045,178 @@ function renderMap() {
 let currentMissionDay = null;
 let currentMissionSeason = 1;
 const practiced = new Set();
+let activePhraseIdx = 0;
+
+// ── Briefing (lo que practicarás hoy) ──
+function renderBriefing(day, season) {
+    const lkey = season === 2 ? 's2' : 's1';
+    const ldata = LEARNED[lkey]?.[day];
+    const phrases = getMissions(season)[day - 1].phrases;
+    if (!ldata) return '';
+    const phrasePreviews = phrases.map((ph, i) => `
+        <div class="briefing-phrase-preview">
+            <span><strong>${i+1}. ${ph.en}</strong> <em style="color:var(--text-muted);font-size:12px;">= ${ph.es}</em></span>
+            <span class="bph">${phrasePh(ph.en)}</span>
+        </div>`).join('');
+    return `<div class="briefing-card">
+        <div class="briefing-header" onclick="toggleBriefing(this)">
+            <h3>📋 Hoy vas a practicar</h3>
+            <span class="brief-toggle">▼</span>
+        </div>
+        <div class="briefing-body">
+            <div style="background:rgba(30,58,110,.07);border-radius:10px;padding:10px 12px;margin-bottom:10px;">
+                <div style="font-size:10px;font-weight:800;color:var(--text-muted);letter-spacing:.8px;margin-bottom:3px;">📐 GRAMÁTICA DEL DÍA</div>
+                <div style="font-size:13px;font-weight:700;color:var(--primary);">${ldata.grammar.title}</div>
+                <div style="font-size:12px;font-family:monospace;color:var(--accent);margin-top:2px;">${ldata.grammar.rule}</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:2px;font-style:italic;">${ldata.grammar.example}</div>
+            </div>
+            <div style="font-size:10px;font-weight:800;color:var(--text-muted);letter-spacing:.8px;margin-bottom:8px;">🎯 LAS ${phrases.length} FRASES DE HOY</div>
+            ${phrasePreviews}
+            <div style="margin-top:10px;background:rgba(255,107,53,.07);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text);line-height:1.5;">
+                <strong>💡 Tip:</strong> ${ldata.tip}
+            </div>
+            <div style="margin-top:8px;background:rgba(0,200,150,.07);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text);">
+                <strong>👤 Pronombre clave:</strong> ${ldata.pronoun}
+            </div>
+        </div>
+    </div>`;
+}
+function toggleBriefing(header) {
+    header.nextElementSibling.classList.toggle('open');
+    header.querySelector('.brief-toggle').classList.toggle('open');
+}
+
+// ── Phrase cards (secuenciales con validación) ──
+function renderPhraseCards() {
+    const missions = getMissions(currentMissionSeason);
+    const phrases  = missions[currentMissionDay - 1].phrases;
+    const done     = (currentMissionSeason === 2 ? S.completedDays2 : S.completedDays).includes(currentMissionDay);
+
+    return phrases.map((ph, i) => {
+        const ph_text = phrasePh(ph.en);
+        if (done || i < activePhraseIdx) {
+            // Completada
+            return `<div class="phrase-card done" id="pc${i+1}" onclick="speak('${ph.en.replace(/'/g,"\\'")}')" title="Toca para escuchar">
+                <div style="flex:1;">
+                    <div class="phrase-en">${ph.en}</div>
+                    <div class="phrase-es">${ph.es}</div>
+                    <div class="phrase-ph">${ph_text}</div>
+                </div>
+                <div class="phrase-actions">
+                    <button class="btn-slow" onclick="event.stopPropagation();speak('${ph.en.replace(/'/g,"\\'")}',0.45)">🐢</button>
+                    <div class="phrase-btn" style="background:var(--success);">✓</div>
+                </div>
+            </div>`;
+        }
+        if (i === activePhraseIdx) {
+            // Activa
+            return `<div class="phrase-card active" id="pc${i+1}">
+                <div style="width:100%;">
+                    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+                        <div style="flex:1;">
+                            <div class="phrase-en">${ph.en}</div>
+                            <div class="phrase-es">${ph.es}</div>
+                            <div class="phrase-ph">${ph_text}</div>
+                        </div>
+                        <div class="phrase-actions" style="flex-shrink:0;">
+                            <button class="btn-slow" onclick="speak('${ph.en.replace(/'/g,"\\'")}',0.45)">🐢</button>
+                            <div class="phrase-btn" style="background:var(--accent);" onclick="speak('${ph.en.replace(/'/g,"\\'")}')">🔊</div>
+                        </div>
+                    </div>
+                    <div class="phrase-validate-area">
+                        <div class="phrase-validate-label">✍️ Escribe la frase tal como la lees:</div>
+                        <input class="phrase-type-input" id="pi${i}" type="text"
+                            placeholder="Escribe aquí en inglés..."
+                            onkeydown="if(event.key==='Enter')validatePhrase(${i})">
+                        <div class="phrase-verify-row">
+                            <button class="phrase-verify-btn" onclick="validatePhrase(${i})">✓ Verificar</button>
+                            <button class="phrase-continue-btn" onclick="advancePhrase(${i},false)">Saltar →</button>
+                        </div>
+                        <div id="pf${i}" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>`;
+        }
+        // Bloqueada
+        return `<div class="phrase-card locked" id="pc${i+1}">
+            <div style="flex:1;">
+                <div class="phrase-en">🔒 Frase ${i+2} — practica la anterior primero</div>
+                <div class="phrase-es">${ph.es}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function validatePhrase(idx) {
+    const ph = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases[idx];
+    const input = document.getElementById('pi' + idx);
+    const feedEl = document.getElementById('pf' + idx);
+    const userText = (input ? input.value : '').trim();
+    if (!userText) {
+        feedEl.style.display = 'block';
+        feedEl.className = 'phrase-feedback err';
+        feedEl.innerHTML = '💡 Primero escucha la frase (🔊) y luego escríbela aquí.';
+        return;
+    }
+    const norm = s => s.toLowerCase().replace(/[^a-z\s']/g,'').trim().replace(/\s+/g,' ');
+    const expected = norm(ph.en);
+    const got      = norm(userText);
+    const expWords = expected.split(' ');
+    const gotWords = got.split(' ');
+    const hits = expWords.filter(w => gotWords.includes(w)).length;
+    const score = hits / expWords.length;
+
+    if (score >= 0.65) {
+        input.classList.add('v-ok');
+        feedEl.style.display = 'block';
+        feedEl.className = 'phrase-feedback ok';
+        feedEl.innerHTML = score === 1 ? '✅ ¡Perfecto! Exactamente correcto.' : `✅ ¡Muy bien! (${Math.round(score*100)}% correcto)`;
+        setTimeout(() => advancePhrase(idx, true), 800);
+    } else {
+        input.classList.add('v-err');
+        feedEl.style.display = 'block';
+        feedEl.className = 'phrase-feedback err';
+        feedEl.innerHTML = `❌ Respuesta esperada: <strong>"${ph.en}"</strong><br>
+            <span style="font-size:11px;color:var(--text-muted);">Pronunciación: ${phrasePh(ph.en)}</span><br>
+            <button class="phrase-continue-btn" onclick="advancePhrase(${idx},false)" style="margin-top:6px;">Continuar igual →</button>`;
+    }
+}
+
+function advancePhrase(idx, correct) {
+    const phrases = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases;
+    activePhraseIdx = idx + 1;
+    practiced.add(idx + 1);
+    updateProgressDots();
+    document.getElementById('m-phrases').innerHTML = renderPhraseCards();
+
+    const tip = document.getElementById('lia-tip');
+    if (activePhraseIdx >= phrases.length) {
+        enableComplete();
+        tip.innerHTML = '¡Excelente! Practicaste todas las frases. Ahora presiona <strong>Simular voz</strong> para hablar en voz alta.';
+    } else {
+        const next = phrases[activePhraseIdx];
+        speak(next.en, 0.72);
+        const rem = phrases.length - activePhraseIdx;
+        tip.innerHTML = correct
+            ? `¡Correcto! ${rem} frase${rem>1?'s':''} más. Escucha la siguiente.`
+            : `Sigue practicando — ${rem} frase${rem>1?'s':''} más.`;
+        setTimeout(() => {
+            const el = document.getElementById('pc' + (activePhraseIdx + 1));
+            if (el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+        }, 200);
+    }
+}
+
+function updateProgressDots() {
+    const total = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases.length;
+    for (let i = 1; i <= total; i++) {
+        const el = document.getElementById('pd' + i);
+        if (!el) continue;
+        if (i - 1 < activePhraseIdx)       el.className = 'pdot done';
+        else if (i - 1 === activePhraseIdx) el.className = 'pdot current';
+        else                                el.className = 'pdot';
+    }
+}
 
 function openAndGoMission(season, day) {
     openMission(season, day);
@@ -1970,6 +2228,7 @@ function openMission(season, day) {
     currentMissionDay = day;
     currentMissionSeason = season || 1;
     practiced.clear();
+    activePhraseIdx = 0;
     const missions = getMissions(currentMissionSeason);
     const m = missions[day - 1];
     const isDone = (currentMissionSeason === 2 ? S.completedDays2 : S.completedDays).includes(day);
@@ -1981,7 +2240,15 @@ function openMission(season, day) {
 
     // Dots
     const dotsEl = document.getElementById('m-dots');
-    dotsEl.innerHTML = m.phrases.map((_, i) => `<div class="pdot ${i === 0 ? 'current' : ''}" id="pd${i+1}"></div>`).join('');
+    if (isDone) {
+        dotsEl.innerHTML = m.phrases.map((_, i) => `<div class="pdot done" id="pd${i+1}"></div>`).join('');
+    } else {
+        dotsEl.innerHTML = m.phrases.map((_, i) => `<div class="pdot ${i === 0 ? 'current' : ''}" id="pd${i+1}"></div>`).join('');
+    }
+
+    // Briefing
+    const briefEl = document.getElementById('m-briefing');
+    if (briefEl) briefEl.innerHTML = !isDone ? renderBriefing(day, currentMissionSeason) : '';
 
     // Scene
     document.getElementById('m-scene-card').style.background = m.sceneColors;
@@ -1998,24 +2265,14 @@ function openMission(season, day) {
     document.getElementById('m-dial-en').textContent = m.dialogue.en;
     document.getElementById('m-dial-es').textContent = m.dialogue.es;
 
-    // Phrases
-    const pEl = document.getElementById('m-phrases');
-    pEl.innerHTML = m.phrases.map((ph, i) => `
-        <div class="phrase-card" id="pc${i+1}">
-            <div onclick="practicePhrase(${i+1})" style="flex:1;cursor:pointer;">
-                <div class="phrase-en">${ph.en}</div>
-                <div class="phrase-es">${ph.es}</div>
-            </div>
-            <div class="phrase-actions">
-                <button class="btn-slow" onclick="speakSlow(${i+1})" title="Escuchar lento">🐢</button>
-                <div class="phrase-btn" id="pb${i+1}" onclick="practicePhrase(${i+1})">🔊</div>
-            </div>
-        </div>`).join('');
+    // Phrases — secuenciales con validación (o todas done si ya completó)
+    if (isDone) activePhraseIdx = m.phrases.length;
+    document.getElementById('m-phrases').innerHTML = renderPhraseCards();
 
     // Lia tip
     document.getElementById('lia-tip').innerHTML = isDone
-        ? '¡Ya completaste esta misión! Puedes repasar las frases cuando quieras.'
-        : 'Toca cada frase para escucharla y practicarla. Cuando estés listo, presiona <strong>Simular voz</strong>.';
+        ? '¡Ya completaste esta misión! Toca cualquier frase para escucharla de nuevo.'
+        : '1️⃣ Escucha la frase → 2️⃣ Lee la pronunciación → 3️⃣ Escríbela → ✓ Verifica.';
 
     // Learned section
     const learnedKey = currentMissionSeason === 2 ? 's2' : 's1';
@@ -2024,6 +2281,13 @@ function openMission(season, day) {
     if (ldata && learnedEl) {
         const vocabHtml = ldata.vocab.map(v =>
             `<div class="vocab-pill"><span class="vocab-en">${v.en}</span> <span class="vocab-es">= ${v.es}</span></div>`
+        ).join('');
+        // Key pronunciation from phrases
+        const keyWords = m.phrases.slice(0,2).map(ph =>
+            `<div style="font-size:12px;padding:4px 0;border-bottom:1px dashed var(--border);">
+                <strong>${ph.en}</strong>
+                <div style="font-size:11px;color:var(--accent);font-family:monospace;font-weight:700;">${phrasePh(ph.en)}</div>
+            </div>`
         ).join('');
         learnedEl.innerHTML = `
         <div class="learned-card">
@@ -2039,6 +2303,10 @@ function openMission(season, day) {
                         <div class="grammar-rule-text">${ldata.grammar.rule}</div>
                         <div class="grammar-example">${ldata.grammar.example}</div>
                     </div>
+                </div>
+                <div class="learned-section">
+                    <div class="learned-section-title">🔊 Pronunciación de frases clave</div>
+                    ${keyWords}
                 </div>
                 <div class="learned-section">
                     <div class="learned-section-title">🔤 Vocabulario nuevo</div>
@@ -2066,47 +2334,20 @@ function openMission(season, day) {
         <button class="btn-complete" style="background:linear-gradient(135deg,#FF6B35,#FFB800);margin-top:10px;" onclick="startConversation(${currentMissionSeason},${day})">
             🎭 Conversación Real${pctBadge}
         </button>`;
-        setTimeout(() => m.phrases.forEach((_, i) => markPhraseDone(i + 1)), 50);
     } else {
         ca.innerHTML = `<button class="btn-complete" id="btn-complete" onclick="completeMission()" style="opacity:.35;pointer-events:none;">✓ &nbsp;Completar misión</button>`;
+        // Auto-speak first phrase after a brief delay
+        setTimeout(() => speak(m.phrases[0].en, 0.75), 800);
     }
 }
 
 function markPhraseDone(n) {
-    const card = document.getElementById('pc' + n);
-    const btn  = document.getElementById('pb' + n);
-    if (card) card.className = 'phrase-card done';
-    if (btn)  btn.textContent = '✓';
+    // kept for voice modal compat — no-op in new flow (renderPhraseCards handles UI)
 }
 
 function practicePhrase(n) {
-    const missions = getMissions(currentMissionSeason);
-    const done = currentMissionSeason === 2 ? S.completedDays2 : S.completedDays;
-    if (done.includes(currentMissionDay)) {
-        speak(missions[currentMissionDay - 1].phrases[n - 1].en);
-        return;
-    }
-    practiced.add(n);
-    markPhraseDone(n);
-    speak(missions[currentMissionDay - 1].phrases[n - 1].en);
-
-    // Update progress dots
-    const total = missions[currentMissionDay - 1].phrases.length;
-    for (let i = 1; i <= total; i++) {
-        const el = document.getElementById('pd' + i);
-        if (!el) continue;
-        if (practiced.has(i))   { el.className = 'pdot done'; }
-        else if (i === n + 1)   { el.className = 'pdot current'; }
-    }
-
-    const remaining = total - practiced.size;
-    const tip = document.getElementById('lia-tip');
-    if (remaining > 0) {
-        tip.innerHTML = `¡Bien! Te ${remaining === 1 ? 'falta' : 'faltan'} <strong>${remaining} frase${remaining > 1 ? 's' : ''}</strong>. Sigue practicando.`;
-    } else {
-        tip.innerHTML = '¡Excelente! Practicaste todas las frases. Ahora presiona <strong>Simular voz</strong> para hablar en voz alta.';
-        enableComplete();
-    }
+    const ph = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases[n - 1];
+    if (ph) speak(ph.en);
 }
 
 function enableComplete() {
@@ -2411,11 +2652,12 @@ function closeVoice() {
     if (recognition) recognition.abort();
     isListening = false;
     document.getElementById('voice-modal').classList.remove('show');
-    // Mark all phrases as practiced
+    // Advance all phrase cards to done state
     const total = getMissions(currentMissionSeason)[currentMissionDay - 1].phrases.length;
-    for (let i = 1; i <= total; i++) {
-        if (!practiced.has(i)) { practiced.add(i); markPhraseDone(i); }
-    }
+    activePhraseIdx = total;
+    for (let i = 1; i <= total; i++) practiced.add(i);
+    document.getElementById('m-phrases').innerHTML = renderPhraseCards();
+    updateProgressDots();
     enableComplete();
     document.getElementById('lia-tip').innerHTML =
         '¡Muy bien! Practicaste en voz alta. Presiona <strong>Completar misión</strong> cuando estés listo.';
