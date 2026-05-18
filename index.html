@@ -610,31 +610,30 @@
 <div class="voice-modal" id="voice-modal">
     <div class="voice-sheet">
         <div class="voice-day-label" id="v-label">Día 1 · Frase 1 de 4</div>
-        <h3>Di esta frase en voz alta</h3>
+        <h3>Practica en voz alta</h3>
+        <div style="font-size:12px;opacity:.65;margin-bottom:10px;">1. Escucha · 2. Di la frase en voz alta · 3. Escribe lo que dijiste</div>
         <div class="voice-phrase" id="voice-phrase-text"></div>
+        <div class="voice-controls" style="justify-content:center;gap:12px;">
+            <button class="btn-listen-voice" onclick="speakVoicePhrase()">🔊 Escuchar</button>
+            <button class="btn-listen-voice" onclick="speakVoicePhraseSlow()" style="background:rgba(255,255,255,.15);">🐢 Lento</button>
+        </div>
         <div class="voice-comparison" id="v-comparison" style="display:none">
             <div class="comp-row">
-                <div class="comp-label">🎤 Lo que dijiste</div>
+                <div class="comp-label">📝 Lo que escribiste</div>
                 <div class="comp-value" id="v-you-said"></div>
             </div>
             <div class="comp-row">
-                <div class="comp-label">✅ Palabras correctas / faltantes</div>
+                <div class="comp-label">🟢 Correcto &nbsp;🔴 Faltante</div>
                 <div class="comp-value" id="v-word-check"></div>
             </div>
         </div>
         <div class="voice-feedback" id="v-feedback"></div>
-        <div class="voice-controls">
-            <button class="btn-listen-voice" onclick="speakVoicePhrase()">🔊 Normal</button>
-            <button class="btn-listen-voice" onclick="speakVoicePhraseSlow()" style="background:rgba(255,255,255,.15);">🐢 Lento</button>
-            <button class="mic-btn" id="mic-btn" onclick="toggleRecognition()">🎤</button>
-        </div>
-        <div class="voice-hint" id="v-hint">Toca 🔊 para escuchar · 🐢 para oír lento · 🎤 para grabar tu voz</div>
-        <div class="manual-input-section">
-            <span class="manual-input-label">¿El micrófono no funciona? Escribe la frase como la dirías:</span>
+        <div class="manual-input-section" style="border-top:1px solid rgba(255,255,255,.1);padding-top:14px;margin-top:4px;">
+            <span class="manual-input-label">Di la frase en voz alta, luego escríbela aquí:</span>
             <div class="manual-input-row">
-                <input class="manual-input" id="manual-input" type="text" placeholder="Escribe aquí en inglés…"
+                <input class="manual-input" id="manual-input" type="text" placeholder="Escribe la frase en inglés…"
                     onkeydown="if(event.key==='Enter')submitManual()" />
-                <button class="btn-manual-check" onclick="submitManual()">Verificar ✓</button>
+                <button class="btn-manual-check" onclick="submitManual()">✓</button>
             </div>
         </div>
         <div class="voice-nav-btns">
