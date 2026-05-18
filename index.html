@@ -3,7 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Live English Missions</title>
+    <title>Live English Missions — Aprende inglés con misiones reales</title>
+    <meta name="description" content="Aprende inglés de forma práctica con misiones de la vida real: aeropuerto, hotel, restaurante y trabajo. Pronunciación, conversación y evaluación incluidas. ¡Gratis!">
+    <meta name="keywords" content="aprender inglés, inglés para adultos, inglés gratis, aprender inglés en español, inglés viaje, inglés trabajo, app inglés">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Live English Missions">
+    <meta property="og:title" content="Live English Missions — Aprende inglés con misiones reales">
+    <meta property="og:description" content="Misiones reales de inglés: aeropuerto, hotel, restaurante y oficina. Con pronunciación fonética, conversación real y evaluación instantánea.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://englishmissions.com">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Live English Missions">
+    <meta name="twitter:description" content="Aprende inglés con misiones de la vida real. ¡Gratis!">
+    <link rel="canonical" href="https://englishmissions.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -2336,8 +2348,12 @@ function openMission(season, day) {
         </button>`;
     } else {
         ca.innerHTML = `<button class="btn-complete" id="btn-complete" onclick="completeMission()" style="opacity:.35;pointer-events:none;">✓ &nbsp;Completar misión</button>`;
-        // Auto-speak first phrase after a brief delay
-        setTimeout(() => speak(m.phrases[0].en, 0.75), 800);
+        // Auto-speak only when user is actually on the mission screen
+        setTimeout(() => {
+            if (document.getElementById('screen-mission').classList.contains('active')) {
+                speak(m.phrases[0].en, 0.75);
+            }
+        }, 800);
     }
 }
 
