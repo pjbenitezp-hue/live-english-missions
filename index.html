@@ -611,15 +611,16 @@
     <div class="voice-sheet">
         <div class="voice-day-label" id="v-label">Día 1 · Frase 1 de 4</div>
         <h3>Practica en voz alta</h3>
-        <div style="font-size:12px;opacity:.65;margin-bottom:10px;">1. Escucha · 2. Di la frase en voz alta · 3. Escribe lo que dijiste</div>
         <div class="voice-phrase" id="voice-phrase-text"></div>
         <div class="voice-controls" style="justify-content:center;gap:12px;">
-            <button class="btn-listen-voice" onclick="speakVoicePhrase()">🔊 Escuchar</button>
+            <button class="btn-listen-voice" onclick="speakVoicePhrase()">🔊 Normal</button>
             <button class="btn-listen-voice" onclick="speakVoicePhraseSlow()" style="background:rgba(255,255,255,.15);">🐢 Lento</button>
+            <button class="mic-btn" id="mic-btn" onclick="toggleRecognition()">🎤</button>
         </div>
+        <div class="voice-hint" id="v-hint">Toca 🔊 para escuchar · 🎤 para hablar y que te evalúe</div>
         <div class="voice-comparison" id="v-comparison" style="display:none">
             <div class="comp-row">
-                <div class="comp-label">📝 Lo que escribiste</div>
+                <div class="comp-label">🎤 Lo que dijiste</div>
                 <div class="comp-value" id="v-you-said"></div>
             </div>
             <div class="comp-row">
@@ -628,10 +629,10 @@
             </div>
         </div>
         <div class="voice-feedback" id="v-feedback"></div>
-        <div class="manual-input-section" style="border-top:1px solid rgba(255,255,255,.1);padding-top:14px;margin-top:4px;">
-            <span class="manual-input-label">Di la frase en voz alta, luego escríbela aquí:</span>
+        <div class="manual-input-section">
+            <span class="manual-input-label">¿El micrófono no responde? Escribe lo que dijiste:</span>
             <div class="manual-input-row">
-                <input class="manual-input" id="manual-input" type="text" placeholder="Escribe la frase en inglés…"
+                <input class="manual-input" id="manual-input" type="text" placeholder="Escribe aquí en inglés…"
                     onkeydown="if(event.key==='Enter')submitManual()" />
                 <button class="btn-manual-check" onclick="submitManual()">✓</button>
             </div>
@@ -1571,17 +1572,17 @@ function renderVoicePhrase() {
     document.getElementById('v-feedback').textContent     = '';
     const mi = document.getElementById('manual-input');
     if (mi) mi.value = '';
-    document.getElementById('v-hint').textContent         = 'Toca 🔊 Normal para escuchar · 🐢 Lento para practicar · 🎤 para hablar';
-    document.getElementById('v-next-btn').textContent     = voicePhraseIdx < total - 1 ? 'Siguiente →' : 'Finalizar ✓';
+    document.getElementById('v-next-btn').textContent = voicePhraseIdx < total - 1 ? 'Siguiente →' : 'Finalizar ✓';
 
-    resetMicBtn();
-
+    const micBtn = document.getElementById('mic-btn');
     if (!SR) {
-        const box = document.getElementById('v-transcript-box');
-        box.style.display = 'block';
-        document.getElementById('v-transcript').innerHTML =
-            '⚠️ Tu navegador no soporta reconocimiento de voz.<br>Usa <strong>Chrome</strong> o <strong>Edge</strong> para activarlo.';
+        if (micBtn) { micBtn.style.display = 'none'; }
+        document.getElementById('v-hint').textContent = 'Toca 🔊 para escuchar · luego usa el campo de texto para evaluar tu pronunciación';
+    } else {
+        if (micBtn) { micBtn.style.display = 'flex'; }
+        document.getElementById('v-hint').textContent = 'Toca 🔊 para escuchar · 🎤 para hablar y que te evalúe';
     }
+    resetMicBtn();
 }
 
 function speakVoicePhrase() {
@@ -1619,37 +1620,74 @@ function startListening() {
     recognition.maxAlternatives = 3;
 
     isListening = true;
+    let lastInterim = '';
+    let autoStopTimer = null;
+
     const micBtn = document.getElementById('mic-btn');
     micBtn.textContent = '⏹';
     micBtn.classList.add('listening');
-    document.getElementById('v-hint').textContent = '🔴 Escuchando… habla ahora';
-    document.getElementById('v-transcript-box').style.display = 'block';
-    document.getElementById('v-transcript').textContent = '…';
+    document.getElementById('v-hint').textContent = '🔴 Escuchando… habla ahora en inglés';
+
+    recognition.onstart = () => {
+        // Si no detecta nada en 7 segundos, usa el interim o detiene
+        autoStopTimer = setTimeout(() => {
+            if (isListening) {
+                recognition.stop();
+                if (lastInterim) showVoiceFeedback(lastInterim);
+                else document.getElementById('v-hint').textContent = 'No te escuché. Toca 🎤 de nuevo o usa el campo de texto abajo.';
+            }
+        }, 7000);
+    };
 
     recognition.onresult = (e) => {
+        clearTimeout(autoStopTimer);
         let interim = '', final = '';
         for (let i = e.resultIndex; i < e.results.length; i++) {
-            if (e.results[i].isFinal) final = e.results[i][0].transcript;
-            else interim = e.results[i][0].transcript;
+            if (e.results[i].isFinal) final += e.results[i][0].transcript;
+            else interim += e.results[i][0].transcript;
         }
-        document.getElementById('v-transcript').textContent = final || interim || '…';
+        if (interim) lastInterim = interim;
+        // Muestra el texto mientras habla
+        const showing = final || interim;
+        if (showing) {
+            document.getElementById('v-comparison').style.display = 'block';
+            document.getElementById('v-you-said').textContent = showing + (final ? '' : '…');
+            document.getElementById('v-word-check').innerHTML = '';
+        }
         if (final) showVoiceFeedback(final);
     };
 
     recognition.onerror = (e) => {
-        resetMicBtn();
+        clearTimeout(autoStopTimer);
         isListening = false;
+        resetMicBtn();
+        if (lastInterim) { showVoiceFeedback(lastInterim); return; }
         const msgs = {
-            'no-speech':   'No te escuché. Acércate al micrófono e intenta de nuevo.',
-            'not-allowed': '⚠️ Permiso de micrófono denegado. Habilítalo en tu navegador.',
-            'network':     'Error de red. Verifica tu conexión.',
+            'no-speech':     'No te escuché. Habla más fuerte y cerca del micrófono.',
+            'not-allowed':   '⚠️ Permiso de micrófono denegado. Actívalo en tu navegador.',
+            'audio-capture': '⚠️ No se detectó micrófono. Usa el campo de texto abajo.',
+            'network':       'Error de red. Usa el campo de texto abajo.',
         };
-        document.getElementById('v-hint').textContent = msgs[e.error] || 'Error. Intenta de nuevo.';
+        document.getElementById('v-hint').textContent = msgs[e.error] || 'Error al grabar. Usa el campo de texto abajo.';
     };
 
-    recognition.onend = () => { isListening = false; resetMicBtn(); };
+    recognition.onend = () => {
+        clearTimeout(autoStopTimer);
+        isListening = false;
+        resetMicBtn();
+        // Si hubo interim pero nunca llegó resultado final, usarlo
+        if (lastInterim && document.getElementById('v-comparison').style.display === 'none') {
+            showVoiceFeedback(lastInterim);
+        }
+    };
 
-    recognition.start();
+    try {
+        recognition.start();
+    } catch(e) {
+        isListening = false;
+        resetMicBtn();
+        document.getElementById('v-hint').textContent = 'Tu navegador no soporta el micrófono. Usa el campo de texto abajo.';
+    }
 }
 
 function stopListening() {
